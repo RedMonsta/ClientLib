@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OlympFoodClient.DishPage" Title="Информация о блюде">
+    <StackLayout>
+        <StackLayout>
+            <Label Text="Название" />
+            <Label Text="{Binding Path=Model.Name}" FontSize="Medium" />
+            <Label Text="Энергетическая ценность" />
+            <Label Text="{Binding Path=Model.EnergyValue}" FontSize="Medium" />
+            <Label Text="Цена" />
+            <Label Text="{Binding Path=Model.Price}" FontSize="Medium" />
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+            <Button Text="Назад" Command="{Binding Path=ViewModel.BackCommand}" />
+        </StackLayout>
+    </StackLayout>
+</ContentPage>

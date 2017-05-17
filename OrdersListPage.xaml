@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OlympFoodClient.OrdersListPage"  Title="Ваши заказы"> <!-- ПОКА ВСЕ ЗАКАЗЫ ВСЕХ ПОЛЬЗОВАТЕЛЕЙ -->
+    <StackLayout x:Name="slMain">
+        <Button Text="Заказать" Command="{Binding CreateOrderCommand}" IsEnabled="{Binding IsLoaded}" />
+        <Label x:Name="lblError" IsVisible="False" Text="No orders yet" FontSize="Large" />
+        <ListView x:Name="ordersList" ItemsSource="{Binding Orders}"
+              SelectedItem="{Binding SelectedOrder, Mode=TwoWay}" HasUnevenRows="True">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <ViewCell.View>
+                            <StackLayout>
+                                <Label Text="{Binding Name}" FontSize="Medium" />
+                                <Label Text="{Binding Surname}" FontSize="Medium" />
+                                <Label Text="{Binding Phone}" FontSize="Medium" />
+                                <Label Text="{Binding Address}" FontSize="Medium" />
+                                <Label Text="{Binding Dish}" FontSize="Medium" />
+                                <Label Text="{Binding Status}" FontSize="Medium" />
+                            </StackLayout>
+                        </ViewCell.View>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <StackLayout IsVisible="{Binding IsBusy}"
+                    HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Padding="20">
+            <Label Text="Загрузка данных..." TextColor="Gray" HorizontalOptions="Center" />
+            <ActivityIndicator IsRunning="{Binding IsBusy}" Color="Accent" >
+            </ActivityIndicator>
+        </StackLayout>
+    </StackLayout>
+</ContentPage>

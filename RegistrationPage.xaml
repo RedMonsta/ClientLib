@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OlympFoodClient.RegistrationPage" Title="Регистрация нового пользователя">
+    <StackLayout>
+    <Label x:Name="lblLogin" Text="Логин" />
+    <Entry Text="{Binding Path=ClientParam.Login}" FontSize="Medium" />
+    <Label Text="Пароль" />
+    <Entry Text="{Binding Path=ClientParam.Password}" FontSize="Medium" IsPassword="True" />
+    <Button Text="Отправить" Command="{Binding ViewModel.RegistrationCommand}" CommandParameter="{Binding ClientParam}" />
+
+    </StackLayout>
+
+
+</ContentPage>

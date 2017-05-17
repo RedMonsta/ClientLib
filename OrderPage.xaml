@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OlympFoodClient.OrderPage" Title="Информация о заказе">
+    <StackLayout>
+        <StackLayout>
+            <Label Text="Имя" />
+            <Entry Text="{Binding Path=OrderParam.Name}" FontSize="Medium" />
+            <Label Text="Фамилия" />
+            <Entry Text="{Binding Path=OrderParam.Surname}" FontSize="Medium" />
+            <Label Text="Телефон" />
+            <Entry Text="{Binding Path=OrderParam.Phone}" FontSize="Medium" />
+            <Label Text="Адрес" />
+            <Entry Text="{Binding Path=OrderParam.Address}" FontSize="Medium" />
+            <Label Text="Выбранное блюдо" />
+            <Entry Text="{Binding Path=OrderParam.Dish}" FontSize="Medium" />
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+            <Button Text="Сохранить" Command="{Binding ViewModel.SaveOrderCommand}" CommandParameter="{Binding OrderParam}" />
+            <Button Text="Удалить" Command="{Binding ViewModel.DeleteOrderCommand}" CommandParameter="{Binding OrderParam}" />
+            <Button Text="Назад" Command="{Binding Path=ViewModel.BackCommand}" />
+        </StackLayout>
+    </StackLayout>
+</ContentPage>
