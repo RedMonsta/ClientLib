@@ -14,7 +14,6 @@
                         <ViewCell.View>
                             <StackLayout>
                                 <Label Text="{Binding Name}" FontSize="Medium" />
-                                <!--<Label Text="{Binding Surname}" FontSize="Medium" />-->
                                 <Label Text="{Binding Phone}" FontSize="Medium" />
                                 <Label Text="{Binding Address}" FontSize="Medium" />
                                 <Label Text="{Binding Dish}" FontSize="Medium" />

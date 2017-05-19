@@ -16,6 +16,7 @@ namespace OlympFoodClient
         bool initialized = false;
         Dish selectedDish;
         Order selectedOrder;
+        string choosendishname;
         private bool isBusy;
         private bool isExistUser;
         private bool isOfflineMode;
@@ -51,6 +52,7 @@ namespace OlympFoodClient
         public ICommand StartCommand { protected set; get; }
         public ICommand ExitClientCommand { protected set; get; }
         public ICommand TryToConnectCommand { protected set; get; }
+        public ICommand DishToOrderCommand { protected set; get; }
 
         public INavigation Navigation { get; set; }
 
@@ -136,8 +138,9 @@ namespace OlympFoodClient
             GoToRegistrationCommand = new Command(GoToRegistration);
             StartCommand = new Command(RunApp);
             ExitClientCommand = new Command(ExitToAuthorization);
-
             TryToConnectCommand = new Command(TryToConnect);
+
+            DishToOrderCommand = new Command(ChooseDishToOrder);
 
             if (pagetype == "startpage")
             {
@@ -175,6 +178,8 @@ namespace OlympFoodClient
             ExitClientCommand = new Command(ExitToAuthorization);
             TryToConnectCommand = new Command(TryToConnect);
 
+            DishToOrderCommand = new Command(ChooseDishToOrder);
+
             ClientLogin = login;
             ClientPassword = passwd;
 
@@ -188,6 +193,11 @@ namespace OlympFoodClient
                 SaveUserToFile(ClientLogin, ClientPassword);
             }
             
+        }
+
+        public async void ChooseDishToOrder()
+        {
+            await Navigation.PushAsync(new OrderPage(new Order(), this, choosendishname));
         }
 
         public async void ExitToAuthorization()
@@ -402,6 +412,7 @@ namespace OlympFoodClient
                         Price = value.Price
                     };
                     selectedDish = null;
+                    choosendishname = tempDish.Name;
                     OnPropertyChanged("SelectedDish");
                     Navigation.PushAsync(new DishPage(tempDish, this));
                 }
@@ -621,7 +632,11 @@ namespace OlympFoodClient
                             IsOfflineMode = true;
                             IsOnlineMode = false;
                         }
-                        else Orders.Remove(deletedOrd);
+                        else
+                        {
+                            Orders.Remove(deletedOrd);
+                            SaveOrdersToFile(Orders);
+                        }
                     }
                     IsBusy = false;
                 }

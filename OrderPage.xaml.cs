@@ -33,5 +33,16 @@ namespace OlympFoodClient
             ViewModel = viewModel;           
             this.BindingContext = this;
         }
+
+        public OrderPage(Order model, ApplicationViewModel viewModel, string dishname)
+        {
+            InitializeComponent();
+            OrderParam = model;
+            OrderParam.Dish = dishname;
+            LabelsOn = false;
+            EntriesOn = true;
+            ViewModel = viewModel;
+            this.BindingContext = this;
+        }
     }
 }

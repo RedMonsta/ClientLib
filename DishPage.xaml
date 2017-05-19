@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="OlympFoodClient.DishPage" Title="Информация о блюде">
     <StackLayout>
+        <Label x:Name="lblMessage" Text="{Binding ViewModel.StatementText}" />
         <StackLayout>
             <Label Text="Название" />
             <Label Text="{Binding Path=Model.Name}" FontSize="Medium" />
@@ -13,6 +14,7 @@
         </StackLayout>
         <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
             <Button Text="Назад" Command="{Binding Path=ViewModel.BackCommand}" />
+            <Button Text="Заказать" Command="{Binding Path=ViewModel.DishToOrderCommand}" IsVisible="{Binding ViewModel.IsOnlineMode}"/>
         </StackLayout>
         <Label IsVisible="{Binding ViewModel.IsOfflineMode}" Text="Вы находитесь в оффлайн-режиме" />
         <Label IsVisible="{Binding ViewModel.IsOnlineMode}" Text="Вы перешли в онлайн-режим" />
