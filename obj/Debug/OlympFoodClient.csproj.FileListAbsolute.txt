@@ -21,3 +21,7 @@ D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClien
 D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\obj\Debug\OlympFoodClient.ClientPage.xaml.g.cs
 D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\obj\Debug\OlympFoodClient.StartPage.xaml.g.cs
 D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\obj\Debug\OlympFoodClient.RegistrationPage.xaml.g.cs
+D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\bin\Debug\Plugin.Settings.Abstractions.dll
+D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\bin\Debug\Plugin.Settings.dll
+D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\bin\Debug\Plugin.Settings.xml
+D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\bin\Debug\Plugin.Settings.Abstractions.xml

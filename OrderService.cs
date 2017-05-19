@@ -21,67 +21,107 @@ namespace OlympFoodClient
 
         public async Task<IEnumerable<Order>> Get()
         {
-            HttpClient client = GetClient();
-            string result = await client.GetStringAsync(Url);
-            return JsonConvert.DeserializeObject<IEnumerable<Order>>(result);
+            HttpClient client = GetClient();          
+            try
+            {
+                string result;
+                result = await client.GetStringAsync(Url);
+                return JsonConvert.DeserializeObject<IEnumerable<Order>>(result);
+            }
+            catch (HttpRequestException e)
+            {
+                var tmplist = new List<Order>();
+                var tmpord = new Order { Name = "#RequestException#", Dish = "#RequestException#" };
+                tmplist.Add(tmpord);
+                return tmplist;
+            }
+            
         }
 
+        public async Task<IEnumerable<Order>> Get(string login)
+        {
+            HttpClient client = GetClient();
+            try
+            {
+                string result;
+                result = await client.GetStringAsync(Url + "/" + login);
+                return JsonConvert.DeserializeObject<IEnumerable<Order>>(result);
+            }
+            catch (HttpRequestException e)
+            {
+                var tmplist = new List<Order>();
+                var tmpord = new Order { Name = "#RequestException#", Dish = "#RequestException#" };
+                tmplist.Add(tmpord);
+                return tmplist;
+            }
+        }
 
         public async Task<Order> Add(Order ord)
         {
             HttpClient client = GetClient();
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.PostAsync(Url,
+                    new StringContent(
+                        JsonConvert.SerializeObject(ord),
+                        Encoding.UTF8, "application/json"));
 
-            //ord.Status = "Processing";              // ЗАХАРДКОЖЕНО!!!
-            //ord.Nickname = "RedMonsta";
+                if (response.StatusCode != HttpStatusCode.OK)
+                    return null;
 
-            var response = await client.PostAsync(Url,
-                new StringContent(
-                    JsonConvert.SerializeObject(ord),
-                    Encoding.UTF8, "application/json"));
-
-            if (response.StatusCode != HttpStatusCode.OK)
-                return null;
-
-            return JsonConvert.DeserializeObject<Order>(
-                await response.Content.ReadAsStringAsync());
-            //Order tmpord = JsonConvert.DeserializeObject<Order>(await response.Content.ReadAsStringAsync());
-            //tmpord.Status = "Processing";
-            //tmpord.Nickname = "RedMonsta";
-            //return tmpord;
+                return JsonConvert.DeserializeObject<Order>(
+                    await response.Content.ReadAsStringAsync());
+            }
+            catch (HttpRequestException e)
+            {
+                var order = new Order { Name = "#RequestException#", Dish = "#RequestException#" };
+                return order;
+            }
         }
 
         public async Task<Order> Update(Order ord)
         {
             HttpClient client = GetClient();
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.PutAsync(Url + "/" + ord.Id,
+                    new StringContent(
+                        JsonConvert.SerializeObject(ord),
+                        Encoding.UTF8, "application/json"));
 
-            //ord.Status = "Processing";              // ЗАХАРДКОЖЕНО!!!
-            //ord.Nickname = "RedMonsta";
+                if (response.StatusCode != HttpStatusCode.OK)
+                    return null;
 
-            var response = await client.PutAsync(Url + "/" + ord.Id,
-                new StringContent(
-                    JsonConvert.SerializeObject(ord),
-                    Encoding.UTF8, "application/json"));
-
-            if (response.StatusCode != HttpStatusCode.OK)
-                return null;
-
-            //Order tmpord = JsonConvert.DeserializeObject<Order>( await response.Content.ReadAsStringAsync());
-            //tmpord.Status = "Processing";
-            //tmpord.Nickname = "RedMonsta";
-            //return tmpord;
-            return JsonConvert.DeserializeObject<Order>(
-                await response.Content.ReadAsStringAsync());
+                return JsonConvert.DeserializeObject<Order>(
+                    await response.Content.ReadAsStringAsync());
+            }
+            catch (HttpRequestException e)
+            {
+                var order = new Order { Name = "#RequestException#", Dish = "#RequestException#" };
+                return order;
+            }
         }
 
         public async Task<Order> Delete(int id)
         {
             HttpClient client = GetClient();
-            var response = await client.DeleteAsync(Url + "/" + id);
-            if (response.StatusCode != HttpStatusCode.OK)
-                return null;
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.DeleteAsync(Url + "/" + id);
+                if (response.StatusCode != HttpStatusCode.OK)
+                    return null;
 
-            return JsonConvert.DeserializeObject<Order>(
-               await response.Content.ReadAsStringAsync());
+                return JsonConvert.DeserializeObject<Order>(
+                   await response.Content.ReadAsStringAsync());
+            }
+            catch (HttpRequestException e)
+            {
+                var order = new Order { Name = "#RequestException#", Dish = "#RequestException#" };
+                return order;
+            }
         }
 
     }

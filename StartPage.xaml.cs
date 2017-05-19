@@ -17,7 +17,7 @@ namespace OlympFoodClient
         public StartPage()
         {
             InitializeComponent();
-            ViewModel = new ApplicationViewModel() { Navigation = this.Navigation };
+            ViewModel = new ApplicationViewModel("startpage") { Navigation = this.Navigation };
             BindingContext = ViewModel;
         }
     }

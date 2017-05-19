@@ -13,11 +13,11 @@ namespace OlympFoodClient
         {
             InitializeComponent();
 
-            //MainPage = new OlympFoodClient.MainPage();
-            //MainPage = new NavigationPage(new DishesListPage());
+            //MainPage = new NavigationPage(new DishesListPage("#DefaultNickname#", "#DefaultPassword#"));
 
-            MainPage = new NavigationPage(new ClientPage());
-            //MainPage = new NavigationPage(new StartPage());
+            //MainPage = new NavigationPage(new ClientPage());
+
+            MainPage = new NavigationPage(new StartPage());
         }
 
         protected override void OnStart()

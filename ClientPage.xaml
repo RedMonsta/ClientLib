@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="OlympFoodClient.ClientPage" Title="Вход в профиль">
     <StackLayout>
+        <Label x:Name="lblMessage" Text="{Binding ViewModel.StatementText}" />
         <Label x:Name="lblLogin" Text="Логин" />
         <Entry Text="{Binding Path=ClientParam.Login}" FontSize="Medium" />
         <Label Text="Пароль" />

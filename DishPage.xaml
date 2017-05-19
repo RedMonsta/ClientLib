@@ -7,7 +7,7 @@
             <Label Text="Название" />
             <Label Text="{Binding Path=Model.Name}" FontSize="Medium" />
             <Label Text="Энергетическая ценность" />
-            <Label Text="{Binding Path=Model.EnergyValue}" FontSize="Medium" />
+            <Label Text="{Binding Path=Model.Energy_value}" FontSize="Medium" />
             <Label Text="Цена" />
             <Label Text="{Binding Path=Model.Price}" FontSize="Medium" />
         </StackLayout>

@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System;
 
 namespace OlympFoodClient
 {
@@ -23,12 +24,25 @@ namespace OlympFoodClient
         public async Task<IEnumerable<Dish>> Get()
         {
             HttpClient client = GetClient();
-            string result = await client.GetStringAsync(Url);
+            string result;
+            try
+            {
+                result = await client.GetStringAsync(Url);
+            }
+            catch (HttpRequestException e)
+            {
+                //DisplayAlert("Alert", "You have been alerted", "OK");
+                var reslist = new List<Dish>();
+                var tmpdish = new Dish { Id = 0, Energy_value = 0, Name = "#RequestException#", Price = 0 };
+                reslist.Add(tmpdish);
+                return reslist;
+                //string result = 
+            }
 
             //var tmp = JsonConvert.DeserializeObject<IEnumerable<Dish>>(result);
 
             return JsonConvert.DeserializeObject<IEnumerable<Dish>>(result);
-        }
+        }        
 
     }
 }

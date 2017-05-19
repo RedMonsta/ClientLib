@@ -12,19 +12,22 @@ namespace OlympFoodClient
     public partial class DishesListPage : ContentPage
     {
         ApplicationViewModel viewModel;
+        //string ClientLogin = "";
 
         protected override async void OnAppearing()
         {
-            await viewModel.GetDishes();
+            await viewModel.GetDishes();            
             base.OnAppearing();
         }
 
-        public DishesListPage(string login)
+        public DishesListPage(string login, string passwd)
         {
             InitializeComponent();
-            viewModel = new ApplicationViewModel() { Navigation = this.Navigation };
+            //ClientLogin = login;
+            viewModel = new ApplicationViewModel("disheslistpage", login, passwd) {  Navigation = this.Navigation };
             BindingContext = viewModel;
             lblLogin.Text = login;
+            //Title = login;
         }
     }
 }

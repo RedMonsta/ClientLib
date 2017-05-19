@@ -6,8 +6,8 @@
         <StackLayout>
             <Label Text="Имя" />
             <Entry Text="{Binding Path=OrderParam.Name}" FontSize="Medium" />
-            <Label Text="Фамилия" />
-            <Entry Text="{Binding Path=OrderParam.Surname}" FontSize="Medium" />
+            <!--<Label Text="Фамилия" />
+            <Entry Text="{Binding Path=OrderParam.Surname}" FontSize="Medium" />-->
             <Label Text="Телефон" />
             <Entry Text="{Binding Path=OrderParam.Phone}" FontSize="Medium" />
             <Label Text="Адрес" />

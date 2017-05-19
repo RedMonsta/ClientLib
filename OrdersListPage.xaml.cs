@@ -13,20 +13,26 @@ namespace OlympFoodClient
     public partial class OrdersListPage : ContentPage
     {
         ApplicationViewModel viewModel;
+        //string ClientLogin = "";
 
         protected override async void OnAppearing()
         {
-            await viewModel.GetOrders();
+            var isEmpty = await viewModel.GetOrders();
+            if (isEmpty) lblError.IsVisible = true;
+            else lblError.IsVisible = false;
             base.OnAppearing();
         }
 
-        public OrdersListPage(bool isEmpty)
+        public OrdersListPage(string login)
         {
             InitializeComponent();
-            viewModel = new ApplicationViewModel() { Navigation = this.Navigation };           
+            //ClientLogin = login;
+            viewModel = new ApplicationViewModel("orderslistpage") { Navigation = this.Navigation, ClientLogin = login };           
             BindingContext = viewModel;
-            if (isEmpty) lblError.IsVisible = true;
-            else lblError.IsVisible = false;
+            Title = "Заказы пользователя " + login;
+            //if (isEmpty) lblError.IsVisible = true;
+            //else lblError.IsVisible = false;
+            //lblError.IsVisible = true;
         }
     }
 }

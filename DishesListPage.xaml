@@ -4,6 +4,7 @@
              x:Class="OlympFoodClient.DishesListPage" Title="Список блюд">
     <StackLayout>
         <Label x:Name="lblLogin" Text="{Binding ClientLogin}" FontSize="Large"/>
+        <Button Text="Сменить пользователя" Command="{Binding ExitClientCommand}" IsEnabled="{Binding IsLoaded}" />
         <Button Text="Обновить" Command="{Binding UpdateCommand}" IsEnabled="{Binding IsLoaded}" />
         <Button Text="Заказы" Command="{Binding LoadOrdersCommand}" IsEnabled="{Binding IsLoaded}" />
         <ListView x:Name="dishesList" ItemsSource="{Binding Dishes}"

@@ -18,8 +18,9 @@ namespace OlympFoodClient
         public RegistrationPage()
         {
             InitializeComponent();
-            ViewModel = new ApplicationViewModel() { Navigation = this.Navigation };
+            ViewModel = new ApplicationViewModel("registrationpage") { Navigation = this.Navigation };
             ClientParam = new Client();
+            //lblMessage.IsVisible = false;
             BindingContext = this;
         }
 

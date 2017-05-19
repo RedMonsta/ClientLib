@@ -18,7 +18,7 @@ namespace OlympFoodClient
         public ClientPage()
         {
             InitializeComponent();
-            ViewModel = new ApplicationViewModel() { Navigation = this.Navigation };
+            ViewModel = new ApplicationViewModel("clientpage") { Navigation = this.Navigation };
             //ClientParam = new Client { Login = "User", Id = 0, Password = "qwerty" } ;
             ClientParam = new Client();
             BindingContext = this;

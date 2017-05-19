@@ -3,12 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="OlympFoodClient.RegistrationPage" Title="Регистрация нового пользователя">
     <StackLayout>
-    <Label x:Name="lblLogin" Text="Логин" />
-    <Entry Text="{Binding Path=ClientParam.Login}" FontSize="Medium" />
-    <Label Text="Пароль" />
-    <Entry Text="{Binding Path=ClientParam.Password}" FontSize="Medium" IsPassword="True" />
-    <Button Text="Отправить" Command="{Binding ViewModel.RegistrationCommand}" CommandParameter="{Binding ClientParam}" />
-
+        <!--<Label x:Name="lblMessage" Text="Пользователь с таким ником уже существует" IsVisible="{Binding ViewModel.IsExistUser}" />-->
+        <Label x:Name="lblMessage" Text="{Binding ViewModel.StatementText}" />
+        <Label x:Name="lblLogin" Text="Логин" />
+        <Entry Text="{Binding Path=ClientParam.Login}" FontSize="Medium" />
+        <Label Text="Пароль" />
+        <Entry Text="{Binding Path=ClientParam.Password}" FontSize="Medium" IsPassword="True" />
+        <Button Text="Отправить" Command="{Binding ViewModel.RegistrationCommand}" CommandParameter="{Binding ClientParam}" />
+        
     </StackLayout>
 
 

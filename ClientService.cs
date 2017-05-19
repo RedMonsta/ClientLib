@@ -19,49 +19,57 @@ namespace OlympFoodClient
             return client;
         }
 
-        //public async Task<Client> Get()
-        //{
-        //    HttpClient client = GetClient();
-        //    Task<HttpResponseMessage> res = client.GetAsync(Url);
-        //    //string result = await client.GetAsync(Url);
-
-        //    //if (res.Result.StatusCode == HttpStatusCode.OK) tmp = JsonConvert.DeserializeObject<Client>(res.Result.Content);
-        //    //var tmp = JsonConvert.DeserializeObject<IEnumerable<Dish>>(result);
-
-        //    return JsonConvert.DeserializeObject<Client>(result);
-        //}
-
         public async Task<bool> Check(Client clt)
         {
             HttpClient client = GetClient();
+            HttpResponseMessage response;
 
-            var response = await client.GetAsync(Url + "/" + clt.Login);
-
-            if (response.StatusCode == HttpStatusCode.OK)
+            try
             {
-                
-                var getclt = JsonConvert.DeserializeObject<Client>(await response.Content.ReadAsStringAsync());
-                //return true;
-                if (getclt == null) return false;
-                if (clt.Password == getclt.Password) return true;
+                response = await client.GetAsync(Url + "/" + clt.Login);
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+
+                    var getclt = JsonConvert.DeserializeObject<Client>(await response.Content.ReadAsStringAsync());
+                    //return true;
+                    if (getclt == null) return false;
+                    if (clt.Password == getclt.Password) return true;
+                    else return false;
+                }
                 else return false;
             }
-            else return false;
+            catch (HttpRequestException e)
+            {
+                return false;
+            }
+
+            
         }      
 
         public async Task<Client> Registrate(Client clt)
         {
             HttpClient client = GetClient();
+            HttpResponseMessage response;
 
-            var response = await client.PostAsync(Url,
-                new StringContent(
-                    JsonConvert.SerializeObject(clt),
-                    Encoding.UTF8, "application/json"));
+            try
+            {
+                response = await client.PostAsync(Url,
+                    new StringContent(
+                        JsonConvert.SerializeObject(clt),
+                        Encoding.UTF8, "application/json"));
 
-            if (response.StatusCode != HttpStatusCode.OK)
-                return null;
-            return JsonConvert.DeserializeObject<Client>(
-               await response.Content.ReadAsStringAsync());
+                if (response.StatusCode != HttpStatusCode.OK)
+                    return null;
+                return JsonConvert.DeserializeObject<Client>(
+                   await response.Content.ReadAsStringAsync());
+            }
+            catch (HttpRequestException e)
+            {
+                var tempclt = new Client { Login = "#RequestException#", Password = "#RequestException#" };
+                return tempclt;
+            }
+
+            
         }
     }
 }
