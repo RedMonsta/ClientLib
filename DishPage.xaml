@@ -14,5 +14,8 @@
         <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
             <Button Text="Назад" Command="{Binding Path=ViewModel.BackCommand}" />
         </StackLayout>
+        <Label IsVisible="{Binding ViewModel.IsOfflineMode}" Text="Вы находитесь в оффлайн-режиме" />
+        <Label IsVisible="{Binding ViewModel.IsOnlineMode}" Text="Вы перешли в онлайн-режим" />
+        
     </StackLayout>
 </ContentPage>

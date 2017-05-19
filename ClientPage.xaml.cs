@@ -15,10 +15,10 @@ namespace OlympFoodClient
         public Client ClientParam { get; private set; }
         public ApplicationViewModel ViewModel { get; private set; }
 
-        public ClientPage()
+        public ClientPage(bool isoffline)
         {
             InitializeComponent();
-            ViewModel = new ApplicationViewModel("clientpage") { Navigation = this.Navigation };
+            ViewModel = new ApplicationViewModel("clientpage") { Navigation = this.Navigation, IsOfflineMode = isoffline };
             //ClientParam = new Client { Login = "User", Id = 0, Password = "qwerty" } ;
             ClientParam = new Client();
             BindingContext = this;

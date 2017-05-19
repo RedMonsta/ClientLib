@@ -8,8 +8,11 @@
         <Entry Text="{Binding Path=ClientParam.Login}" FontSize="Medium" />
         <Label Text="Пароль" />
         <Entry Text="{Binding Path=ClientParam.Password}" FontSize="Medium" IsPassword="True" />
-        <Button Text="Войти" Command="{Binding ViewModel.SignInCommand}" CommandParameter="{Binding ClientParam}" />
+        <Button Text="Войти" Command="{Binding ViewModel.SignInCommand}" CommandParameter="{Binding ClientParam}" IsEnabled="{Binding ViewModel.IsOnlineMode}" />
+        <Button Text="Регистрация" Command="{Binding ViewModel.GoToRegistrationCommand}" IsEnabled="{Binding ViewModel.IsOnlineMode}"/>
 
-        <Button Text="Регистрация" Command="{Binding ViewModel.GoToRegistrationCommand}"/>
+        <Label IsVisible="{Binding ViewModel.IsOfflineMode}" Text="Вы находитесь в оффлайн-режиме" />
+        <Button IsVisible="{Binding ViewModel.IsOfflineMode}" Text="Переподключиться" Command="{Binding ViewModel.TryToConnectCommand}"/>
+
     </StackLayout>
 </ContentPage>

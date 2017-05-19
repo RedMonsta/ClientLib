@@ -9,8 +9,10 @@
         <Entry Text="{Binding Path=ClientParam.Login}" FontSize="Medium" />
         <Label Text="Пароль" />
         <Entry Text="{Binding Path=ClientParam.Password}" FontSize="Medium" IsPassword="True" />
-        <Button Text="Отправить" Command="{Binding ViewModel.RegistrationCommand}" CommandParameter="{Binding ClientParam}" />
-        
+        <Button Text="Отправить" Command="{Binding ViewModel.RegistrationCommand}" CommandParameter="{Binding ClientParam}" IsVisible="{Binding ViewModel.IsOnlineMode}"/>
+
+        <Label IsVisible="{Binding ViewModel.IsOfflineMode}" Text="Вы находитесь в оффлайн-режиме" />
+        <Button IsVisible="{Binding ViewModel.IsOfflineMode}" Text="Переподключиться" Command="{Binding ViewModel.TryToConnectCommand}"/>
     </StackLayout>
 
 

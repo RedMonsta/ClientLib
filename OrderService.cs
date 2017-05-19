@@ -110,7 +110,7 @@ namespace OlympFoodClient
             HttpResponseMessage response;
             try
             {
-                response = await client.DeleteAsync(Url + "/" + id);
+                response = await client.DeleteAsync(Url + "/" + id.ToString());
                 if (response.StatusCode != HttpStatusCode.OK)
                     return null;
 

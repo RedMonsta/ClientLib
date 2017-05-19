@@ -19,6 +19,21 @@ namespace OlympFoodClient
             return client;
         }
 
+        public async Task<bool> CheckConnection()
+        {
+            HttpClient client = GetClient();
+            HttpResponseMessage response;           
+            try
+            {
+                response = await client.GetAsync(Url + "/#DefaultUsername#");
+                return false; //Соединение есть, IsOfflineMode = false;
+            }
+            catch (HttpRequestException e)
+            {
+                return true; //Соединение есть, IsOfflineMode = true;
+            }
+        }
+
         public async Task<bool> Check(Client clt)
         {
             HttpClient client = GetClient();
@@ -32,7 +47,7 @@ namespace OlympFoodClient
 
                     var getclt = JsonConvert.DeserializeObject<Client>(await response.Content.ReadAsStringAsync());
                     //return true;
-                    if (getclt == null) return false;
+                    if (getclt == null || getclt.Login == "#NullClient#") return false;
                     if (clt.Password == getclt.Password) return true;
                     else return false;
                 }
@@ -41,9 +56,7 @@ namespace OlympFoodClient
             catch (HttpRequestException e)
             {
                 return false;
-            }
-
-            
+            }          
         }      
 
         public async Task<Client> Registrate(Client clt)

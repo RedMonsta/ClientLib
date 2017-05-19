@@ -13,14 +13,17 @@ namespace OlympFoodClient
 {
     public class ApplicationViewModel : INotifyPropertyChanged
     {
-        bool initialized = false; 
+        bool initialized = false;
         Dish selectedDish;
         Order selectedOrder;
         private bool isBusy;
         private bool isExistUser;
+        private bool isOfflineMode;
+        private bool isOnlineMode;
         public string ClientLogin = "#DefaultNickname#";
         public string ClientPassword = "#DefaultPassword#";
         public readonly string SettingsFilename = "Settings.txt";
+        public readonly string SavedOrdersFilename = "SavedOrders.txt";
 
         public string lblMessageText;
 
@@ -28,7 +31,7 @@ namespace OlympFoodClient
         //bool UserSettingsAuthorised = false;
 
         //string NicknameFromFile = "#DefaultNickname#";
-        
+
         public ObservableCollection<Dish> Dishes { get; set; }
         public ObservableCollection<Order> Orders { get; set; }
         DishService dishesService = new DishService();
@@ -46,10 +49,34 @@ namespace OlympFoodClient
         public ICommand RegistrationCommand { protected set; get; }
         public ICommand GoToRegistrationCommand { protected set; get; }
         public ICommand StartCommand { protected set; get; }
-
         public ICommand ExitClientCommand { protected set; get; }
+        public ICommand TryToConnectCommand { protected set; get; }
 
         public INavigation Navigation { get; set; }
+
+        public bool IsOfflineMode
+        {
+            get { return isOfflineMode; }
+            set
+            {
+                isOfflineMode = value;
+                isOnlineMode = !value;
+                OnPropertyChanged("IsOfflineMode");
+                OnPropertyChanged("IsOnlineMode");
+            }
+        }
+
+        public bool IsOnlineMode
+        {
+            get { return isOnlineMode; }
+            set
+            {
+                isOfflineMode = !value;
+                isOnlineMode = value;
+                OnPropertyChanged("IsOfflineMode");
+                OnPropertyChanged("IsOnlineMode");
+            }
+        }
 
         public bool IsBusy
         {
@@ -95,6 +122,8 @@ namespace OlympFoodClient
             Orders = new ObservableCollection<Order>();
             IsBusy = false;
             IsExistUser = false;
+            IsOfflineMode = false;
+            IsOnlineMode = !IsOfflineMode;
             StatementText = "Введите новый никнейм";
             BackCommand = new Command(Back);
             UpdateCommand = new Command(UpdateDishes);
@@ -106,8 +135,9 @@ namespace OlympFoodClient
             RegistrationCommand = new Command(RegistrateClient);
             GoToRegistrationCommand = new Command(GoToRegistration);
             StartCommand = new Command(RunApp);
-
             ExitClientCommand = new Command(ExitToAuthorization);
+
+            TryToConnectCommand = new Command(TryToConnect);
 
             if (pagetype == "startpage")
             {
@@ -124,11 +154,14 @@ namespace OlympFoodClient
             }
         }
 
+
         public ApplicationViewModel(string pagetype, string login, string passwd)
         {
             Dishes = new ObservableCollection<Dish>();
             Orders = new ObservableCollection<Order>();
             IsBusy = false;
+            IsOfflineMode = false;
+            IsOnlineMode = !IsOfflineMode;
             BackCommand = new Command(Back);
             UpdateCommand = new Command(UpdateDishes);
             CreateOrderCommand = new Command(CreateOrder);
@@ -139,8 +172,8 @@ namespace OlympFoodClient
             RegistrationCommand = new Command(RegistrateClient);
             GoToRegistrationCommand = new Command(GoToRegistration);
             StartCommand = new Command(RunApp);
-
             ExitClientCommand = new Command(ExitToAuthorization);
+            TryToConnectCommand = new Command(TryToConnect);
 
             ClientLogin = login;
             ClientPassword = passwd;
@@ -163,7 +196,7 @@ namespace OlympFoodClient
             ClientPassword = "#DefaultPassword#";
             await DependencyService.Get<IFileWorker>().SaveTextAsync(SettingsFilename, ClientLogin + " " + ClientPassword);
             StatementText = "Авторизация";
-            await Navigation.PushAsync(new ClientPage());
+            await Navigation.PushAsync(new ClientPage(IsOfflineMode));
             var existingpages = Navigation.NavigationStack.ToList();
             //Navigation.RemovePage(existingpages[0]);
             for (int i = existingpages.Count - 2; i >= 0 ; i--)
@@ -203,7 +236,7 @@ namespace OlympFoodClient
 
         public async void GoToRegistration()
         {
-            await Navigation.PushAsync(new RegistrationPage());
+            await Navigation.PushAsync(new RegistrationPage(IsOfflineMode));
         }
 
         public async void RegistrateClient(object cliObject)
@@ -215,79 +248,107 @@ namespace OlympFoodClient
                 IsBusy = true;
                 //IsExistUser = false;
                 Client regclt = await clientService.Registrate(client);
-                if (regclt.Login == "#ExistNickname#")
+                if (regclt.Login == "#RequestException#")
                 {
-                    // ClientLogin = "Such user is exist";     
+                    IsOfflineMode = true;
                     ClientLogin = "#DefaultNickname#";
                     ClientPassword = "#DefaultPassword#";
-                    //var existingpages = Navigation.NavigationStack.ToList();
-                    IsExistUser = true;
-                    StatementText = "Пользователь с таким ником уже существует";
-                    //lblMessageText = "Пользователь с таким ником уже существует";
                 }
                 else
                 {
-                    ClientLogin = client.Login;
-                    ClientPassword = client.Password;
-                    IsExistUser = false;
-                    await Navigation.PushAsync(new DishesListPage(ClientLogin, ClientPassword));
+                    if (regclt.Login == "#ExistNickname#")
+                    {
+                        // ClientLogin = "Such user is exist";     
+                        ClientLogin = "#DefaultNickname#";
+                        ClientPassword = "#DefaultPassword#";
+                        //var existingpages = Navigation.NavigationStack.ToList();
+                        IsExistUser = true;
+                        StatementText = "Пользователь с таким ником уже существует";
+                        //lblMessageText = "Пользователь с таким ником уже существует";
+                    }
+                    else
+                    {
+                        ClientLogin = client.Login;
+                        ClientPassword = client.Password;
+                        IsExistUser = false;
+                        await Navigation.PushAsync(new DishesListPage(ClientLogin, ClientPassword, IsOfflineMode));
+                        var existingpages = Navigation.NavigationStack.ToList();
+                        //StatementText = "Введите новый никнейм";
+                        for (int i = existingpages.Count - 2; i >= 0; i--)
+                        {
+                            Navigation.RemovePage(existingpages[i]);
+                        }
+                    }
+                }
+                IsBusy = false;
+            }
+        }
+
+        public async void TryToConnect()
+        {
+            var client = new Client { Login = ClientLogin, Password = ClientPassword };
+            //bool isAuthorized = await clientService.Check(client);
+            IsOfflineMode = await clientService.CheckConnection();
+            IsOnlineMode = !IsOfflineMode;
+        }
+
+        public async void RunApp()
+        {
+            IsOfflineMode = await clientService.CheckConnection();
+            if (!IsOfflineMode)
+            {
+                if (ClientLogin == "")
+                {
+                    ClientLogin = "#DefaultNickname#";
+                    ClientPassword = "#DefaultPassword#";
+                }
+                if (ClientLogin != "#DefaultNickname#")
+                {
+                    //StatementText = ClientLogin;
+                    var client = new Client { Login = ClientLogin, Password = ClientPassword };
+                    IsBusy = true;
+                    bool isAuthorized = await clientService.Check(client);
+                    if (isAuthorized)
+                    {
+                        // await Navigation.PopAsync();
+                        await Navigation.PushAsync(new DishesListPage(ClientLogin, ClientPassword, IsOfflineMode));
+                    }
+                    else
+                    {
+                        ClientLogin = "#DefaultNickname#";
+                        ClientPassword = "#DefaultPassword#";
+                        await Navigation.PushAsync(new ClientPage(IsOfflineMode));
+                    }
+                    IsBusy = false;
+                }
+                else
+                {
+                    //StatementText = "Hello i'm here" + ClientLogin;
+                    await Navigation.PushAsync(new ClientPage(IsOfflineMode));
                     var existingpages = Navigation.NavigationStack.ToList();
-                    //StatementText = "Введите новый никнейм";
+                    Navigation.RemovePage(existingpages[0]);
+                }
+
+            }
+            else
+            {
+                if (ClientLogin != "#DefaultNickname#")
+                {
+                    await Navigation.PushAsync(new DishesListPage(ClientLogin, ClientPassword, IsOfflineMode));
+                    var existingpages = Navigation.NavigationStack.ToList();
                     for (int i = existingpages.Count - 2; i >= 0; i--)
                     {
                         Navigation.RemovePage(existingpages[i]);
                     }
                 }
-
-                //await Navigation.PushAsync(new DishesListPage(ClientLogin, ClientPassword));
-                //var existingpages = Navigation.NavigationStack.ToList();
-
-                //for (int i = existingpages.Count - 2; i >= 0; i--)
-                //{
-                //    Navigation.RemovePage(existingpages[i]);
-                //}
-                //IsBusy = false;
-            }
-        }
-
-        public async void RunApp()
-        {
-            if (ClientLogin != "#DefaultNickname#")
-            {
-                var client = new Client { Login = ClientLogin, Password = ClientPassword };
-                IsBusy = true;
-                bool isAuthorized = await clientService.Check(client);
-                if (isAuthorized)
-                {
-                    // await Navigation.PopAsync();
-                    await Navigation.PushAsync(new DishesListPage(ClientLogin, ClientPassword));
-                }
                 else
                 {
-                    ClientLogin = "#DefaultNickname#";
-                    ClientPassword = "#DefaultPassword#";
-                    StatementText = "Авторизация";
-                    await Navigation.PushAsync(new ClientPage());
-                    // await Navigation.PopAsync();
-                    //await Navigation.PushAsync(new DishesListPage("#Non authorized", "Non authorized#"));
+                    //StatementText = "Offline " + ClientLogin;
+                    await Navigation.PushAsync(new ClientPage(IsOfflineMode));
+                    var existingpages = Navigation.NavigationStack.ToList();
+                    Navigation.RemovePage(existingpages[0]);
                 }
-                IsBusy = false;
-                var existingpages = Navigation.NavigationStack.ToList();
-                for (int i = existingpages.Count - 2; i >= 0; i--)
-                {
-                    Navigation.RemovePage(existingpages[i]);
-                }
-                //var existingpages = Navigation.NavigationStack.ToList();
-                //Navigation.RemovePage(existingpages[0]);
             }
-            else
-            {
-                StatementText = "Авторизация";
-                await Navigation.PushAsync(new ClientPage());
-                var existingpages = Navigation.NavigationStack.ToList();
-                Navigation.RemovePage(existingpages[0]);
-            }
-
             //await Navigation.PushAsync(new DishesListPage(ClientLogin, ClientPassword));
         }
 
@@ -304,14 +365,16 @@ namespace OlympFoodClient
                     ClientLogin = client.Login;
                     ClientPassword = client.Password;
                     //await Navigation.PopAsync();                   
-                    await Navigation.PushAsync(new DishesListPage(ClientLogin, ClientPassword));
+                    await Navigation.PushAsync(new DishesListPage(ClientLogin, ClientPassword, IsOfflineMode));
                     //await Navigation.NavigationStack[0].
                 }
                 else
                 {
+                    
                     ClientLogin = "#DefaultNickname#";
-                    ClientPassword = "#DefaultPassword#";
-                    StatementText = "Неверное имя пользователя или пароль";
+                    ClientPassword = "#DefaultPassword#";                    
+                    IsOfflineMode = await clientService.CheckConnection();
+                    if (!IsOfflineMode) StatementText = "Неверное имя пользователя или пароль";
                     //await Navigation.PopAsync();
                     //await Navigation.PushAsync(new DishesListPage("Non authorized", "Non authorized#"));
                 }
@@ -343,8 +406,7 @@ namespace OlympFoodClient
                     Navigation.PushAsync(new DishPage(tempDish, this));
                 }
             }
-        }
-        
+        }       
 
         public Order SelectedOrder
         {
@@ -366,7 +428,7 @@ namespace OlympFoodClient
                     };
                     selectedOrder = null;
                     OnPropertyChanged("SelectedOrder");
-                    Navigation.PushAsync(new OrderPage(tempOrd, this));
+                    Navigation.PushAsync(new OrderPage(tempOrd, this, true));
                 }
             }
         }
@@ -381,8 +443,8 @@ namespace OlympFoodClient
         {
             //Navigation.PopAsync();
 
-            Navigation.PushAsync(new OrdersListPage(ClientLogin));
-            var existingpages = Navigation.NavigationStack.ToList();
+            Navigation.PushAsync(new OrdersListPage(ClientLogin, IsOfflineMode));
+            //var existingpages = Navigation.NavigationStack.ToList();
             //Navigation.RemovePage(existingpages[1]);
             //ClientLogin = existingpages[0].ToString();
             // Navigation.PushAsync(new DishesListPage(ClientLogin));
@@ -393,7 +455,7 @@ namespace OlympFoodClient
 
         private async void CreateOrder()
         {
-            await Navigation.PushAsync(new OrderPage(new Order(), this));
+            await Navigation.PushAsync(new OrderPage(new Order(), this, false));
         }
 
         private void Back()
@@ -403,100 +465,201 @@ namespace OlympFoodClient
 
         public async void UpdateDishes()
         {
-            IsBusy = true;
-            IEnumerable<Dish> dishes = await dishesService.Get();
+            if (!IsOfflineMode)
+            {
+                IsBusy = true;
+                IEnumerable<Dish> dishes = await dishesService.Get();
 
-            //Dishes.Clear();
-            while (Dishes.Any())
-                Dishes.RemoveAt(Dishes.Count - 1);
+                //Dishes.Clear();
+                while (Dishes.Any())
+                    Dishes.RemoveAt(Dishes.Count - 1);
 
-            foreach (Dish f in dishes)
-                Dishes.Add(f);
-            IsBusy = false;
+                foreach (Dish f in dishes)
+                    Dishes.Add(f);
+
+                if (Dishes.Count == 1 && Dishes[0].Name == "#RequestException#")
+                {
+                    Dishes.Clear();
+                    IsOfflineMode = true;
+                    IsOnlineMode = false;
+                }
+
+                IsBusy = false;
+            }
         }
 
         public async Task GetDishes()
         {
-            if (initialized == true) return;
-            IsBusy = true;
-            IEnumerable<Dish> dishes = await dishesService.Get();
+            if (!IsOfflineMode)
+            {
+                if (initialized == true) return;
+                IsBusy = true;
+                IEnumerable<Dish> dishes = await dishesService.Get();
 
-            //Dishes.Clear();
-            while (Dishes.Any())
-                Dishes.RemoveAt(Dishes.Count - 1);
+                //Dishes.Clear();
+                while (Dishes.Any())
+                    Dishes.RemoveAt(Dishes.Count - 1);
 
-            foreach (Dish f in dishes)
-                Dishes.Add(f);
+                foreach (Dish f in dishes)
+                    Dishes.Add(f);
 
-            IsBusy = false;
-            initialized = true;
+                if (Dishes.Count == 1 && Dishes[0].Name == "#RequestException#")
+                {
+                    Dishes.Clear();
+                    IsOfflineMode = true;
+                    IsOnlineMode = false;
+                }
+
+                IsBusy = false;
+                initialized = true;
+            }
+            //else 
         }
 
         public async Task<bool> GetOrders()
         {
-            bool result = false;
-            if (initialized == true) return result;
-            IsBusy = true;
-            IEnumerable<Order> orders = await ordersService.Get(ClientLogin);
-         
-            //Dishes.Clear();
-            while (Orders.Any())
-                Orders.RemoveAt(Orders.Count - 1);
-         
-            foreach (Order f in orders)
-                Orders.Add(f);
-            if (Orders.Count == 0) result = true;
-            else result = false;
-            IsBusy = false;
-            initialized = true;
-            return result;
+            if (!IsOfflineMode)
+            {
+                bool result = false;
+                if (initialized == true) return result;
+                IsBusy = true;
+                IEnumerable<Order> orders = await ordersService.Get(ClientLogin);
+
+                //Orders.Clear();
+                while (Orders.Any())
+                    Orders.RemoveAt(Orders.Count - 1);
+
+                foreach (Order f in orders)
+                    Orders.Add(f);
+
+                if (Orders.Count == 1 && Orders[0].Name == "#RequestException#")
+                {
+                    Orders.Clear();
+                    IsOfflineMode = true;
+                    IsOnlineMode = false;
+                }
+                if (Orders.Count == 0) result = true;
+                else result = false;
+                //StatementText = "Я перед загрузкой в файл";
+                SaveOrdersToFile(Orders);
+
+                IsBusy = false;
+                initialized = true;
+                return result;
+                //return true;
+            }
+            else
+            {
+                while (Orders.Any())
+                    Orders.RemoveAt(Orders.Count - 1);
+                var tmpords = await LoadOrdersFromFile();
+                //StatementText = await LoadLineFromFile();
+                foreach (Order f in tmpords)
+                    Orders.Add(f);
+                //StatementText = Orders.Count.ToString();
+                if (Orders.Count == 0) return true;
+                else return false;
+                //return true;
+            }
         }
 
         private async void SaveOrder(object ordObject)
         {
-            Order ord = ordObject as Order;
-            ord.Status = "Ожидает отправки";
-            //ord.Nickname = "RedMonsta";
-            ord.Nickname = ClientLogin;
-
-            if (ord != null)
+            if (!IsOfflineMode)
             {
-                IsBusy = true;
-                if (ord.Id > 0)
+                Order ord = ordObject as Order;
+                ord.Status = "Ожидает отправки";
+                //ord.Nickname = "RedMonsta";
+                ord.Nickname = ClientLogin;
+
+                if (ord != null)
                 {
-                    Order updatedOrder = await ordersService.Update(ord);
-                    if (updatedOrder != null)
+                    IsBusy = true;
+                    if (ord.Id > 0)
                     {
-                        int pos = Orders.IndexOf(updatedOrder);
-                        Orders.RemoveAt(pos);
-                        Orders.Insert(pos, updatedOrder);
+                        //Order updatedOrder = await ordersService.Update(ord);
+                        //if (updatedOrder != null)
+                        //{
+                        //    int pos = Orders.IndexOf(updatedOrder);
+                        //    Orders.RemoveAt(pos);
+                        //    Orders.Insert(pos, updatedOrder);
+                        //}
                     }
+                    else
+                    {
+                        Order addedOrder = await ordersService.Add(ord);
+                        if (addedOrder != null)
+                        {
+                            if (addedOrder.Name == "#RequestException#")
+                            {
+                                IsOfflineMode = true;
+                                IsOnlineMode = false;
+                            }
+                            else Orders.Add(addedOrder);
+                        }
+                            
+                    }
+                    IsBusy = false;
                 }
-                else
-                {
-                    Order addedOrder = await ordersService.Add(ord);
-                    if (addedOrder != null)
-                        Orders.Add(addedOrder);
-                }
-                IsBusy = false;
-            }
-            Back();
+                Back();
+            } 
         }
 
         private async void DeleteOrder(object ordObject)
         {
-            Order ord = ordObject as Order;
-            if (ord != null)
+            if (!IsOfflineMode)
             {
-                IsBusy = true;
-                Order deletedOrd = await ordersService.Delete(ord.Id);
-                if (deletedOrd != null)
+                Order ord = ordObject as Order;
+                if (ord != null)
                 {
-                    Orders.Remove(deletedOrd);
+                    IsBusy = true;
+                    Order deletedOrd = await ordersService.Delete(ord.Id);
+                    if (deletedOrd != null)
+                    {
+                        if (deletedOrd.Name == "#RequestException#")
+                        {
+                            IsOfflineMode = true;
+                            IsOnlineMode = false;
+                        }
+                        else Orders.Remove(deletedOrd);
+                    }
+                    IsBusy = false;
                 }
-                IsBusy = false;
+                Back();
             }
-            Back();
+        }
+
+        private async void SaveOrdersToFile(ObservableCollection<Order> ordlist)
+        {
+            string info = "";          
+            foreach (var order in ordlist)
+            {
+                string oneordstr = order.Id.ToString() + "♪" + order.Name + "♪" + order.Phone + "♪" + order.Address + "♪" + order.Dish + "♪" + order.Status + "♪" + order.Nickname;
+                info = info + oneordstr + "►";
+            }
+            info = info.Remove(info.Length - 1);
+            await DependencyService.Get<IFileWorker>().SaveTextAsync(SavedOrdersFilename, info);
+        }
+
+        private async Task<ObservableCollection<Order>> LoadOrdersFromFile()
+        {
+            ObservableCollection<Order> reslist = new ObservableCollection<Order>();
+            string info = await DependencyService.Get<IFileWorker>().LoadTextAsync(SavedOrdersFilename);
+            string[] OrdersArray = info.Split('►');
+            foreach (var strorder in OrdersArray)
+            {
+                string[] fieldsarr = strorder.Split('♪');
+                Order tmpord = new Order();
+                tmpord.Id = Convert.ToInt32(fieldsarr[0]);
+                tmpord.Name = fieldsarr[1];
+                tmpord.Phone = fieldsarr[2];
+                tmpord.Address = fieldsarr[3];
+                tmpord.Dish = fieldsarr[4];
+                tmpord.Status = fieldsarr[5];
+                tmpord.Nickname = fieldsarr[6];
+                reslist.Add(tmpord);
+            }
+            return reslist;
         }
     }
 }

@@ -20,11 +20,11 @@ namespace OlympFoodClient
             base.OnAppearing();
         }
 
-        public DishesListPage(string login, string passwd)
+        public DishesListPage(string login, string passwd, bool isoffline)
         {
             InitializeComponent();
             //ClientLogin = login;
-            viewModel = new ApplicationViewModel("disheslistpage", login, passwd) {  Navigation = this.Navigation };
+            viewModel = new ApplicationViewModel("disheslistpage", login, passwd) {  Navigation = this.Navigation, IsOfflineMode = isoffline };
             BindingContext = viewModel;
             lblLogin.Text = login;
             //Title = login;

@@ -23,13 +23,14 @@ namespace OlympFoodClient
             base.OnAppearing();
         }
 
-        public OrdersListPage(string login)
+        public OrdersListPage(string login, bool isoffline)
         {
             InitializeComponent();
             //ClientLogin = login;
-            viewModel = new ApplicationViewModel("orderslistpage") { Navigation = this.Navigation, ClientLogin = login };           
+            viewModel = new ApplicationViewModel("orderslistpage") { Navigation = this.Navigation, ClientLogin = login, IsOfflineMode = isoffline };           
             BindingContext = viewModel;
-            Title = "Заказы пользователя " + login;
+            //Title = "Заказы пользователя " + login;
+            Title = login;
             //if (isEmpty) lblError.IsVisible = true;
             //else lblError.IsVisible = false;
             //lblError.IsVisible = true;

@@ -14,12 +14,23 @@ namespace OlympFoodClient
     {
         public Order OrderParam { get; private set; }
         public ApplicationViewModel ViewModel { get; private set; }
+        public bool LabelsOn { get; private set; }
+        public bool EntriesOn { get; private set; }
 
-        public OrderPage(Order model, ApplicationViewModel viewModel)
+        public OrderPage(Order model, ApplicationViewModel viewModel, bool isExistOrder)
         {
             InitializeComponent();
             OrderParam = model;
-            ViewModel = viewModel;
+            if (isExistOrder)
+            {
+                LabelsOn = true;
+                EntriesOn = false;
+            } else
+            {
+                LabelsOn = false;
+                EntriesOn = true;
+            }
+            ViewModel = viewModel;           
             this.BindingContext = this;
         }
     }
