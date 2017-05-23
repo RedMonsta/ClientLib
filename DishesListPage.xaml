@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="OlympFoodClient.DishesListPage" Title="Список блюд">
     <StackLayout>
+        <!--<Label x:Name="lblMessage" Text="{Binding StatementText}" />-->
         <Label x:Name="lblLogin" Text="{Binding ClientLogin}" FontSize="Large"/>
         <Button Text="Сменить пользователя" Command="{Binding ExitClientCommand}" IsEnabled="{Binding IsLoaded}" IsVisible="{Binding IsOnlineMode}"/>
         <Button Text="Обновить" Command="{Binding UpdateCommand}" IsEnabled="{Binding IsLoaded}" IsVisible="{Binding IsOnlineMode}"/>

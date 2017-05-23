@@ -9,7 +9,7 @@ namespace OlympFoodClient
 {
     public class ClientService
     {
-        const string Url = "http://192.168.0.110:52924/api/client/";
+        const string Url = "http://192.168.0.106:52924/api/client/";
         //const string Url = "http://192.168.43.33:52924/api/client/";
 
         private HttpClient GetClient()
@@ -25,12 +25,12 @@ namespace OlympFoodClient
             HttpResponseMessage response;           
             try
             {
-                response = await client.GetAsync(Url + "/#DefaultUsername#");
+                response = await client.GetAsync(Url + "/#DefaultUsername#" +  "/#DefaultPassword#");
                 return false; //Соединение есть, IsOfflineMode = false;
             }
             catch (HttpRequestException e)
             {
-                return true; //Соединение есть, IsOfflineMode = true;
+                return true; //Соединения нет, IsOfflineMode = true;
             }
         }
 
@@ -41,14 +41,13 @@ namespace OlympFoodClient
 
             try
             {
-                response = await client.GetAsync(Url + "/" + clt.Login);
+                response = await client.GetAsync(Url + "/" + clt.Login + "/" + clt.Password );
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
-
                     var getclt = JsonConvert.DeserializeObject<Client>(await response.Content.ReadAsStringAsync());
-                    //return true;
                     if (getclt == null || getclt.Login == "#NullClient#") return false;
-                    if (clt.Password == getclt.Password) return true;
+                    if (getclt.Login == "#WrongPassword#") return false;
+                    if (clt.Password == getclt.Password ) return true;                   
                     else return false;
                 }
                 else return false;

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="OlympFoodClient.OrdersListPage"  Title="Ваши заказы">
     <StackLayout x:Name="slMain">
+        <Label x:Name="lblMessage" Text="{Binding StatementText}" />
         <Button Text="Сменить пользователя" Command="{Binding ExitClientCommand}" IsEnabled="{Binding IsLoaded}" IsVisible="{Binding IsOnlineMode}"/>
         <Button Text="Заказать" Command="{Binding CreateOrderCommand}" IsEnabled="{Binding IsLoaded}" IsVisible="{Binding IsOnlineMode}"/>
         <Label x:Name="lblError" IsVisible="False" Text="Список заказов пуст" FontSize="Large" />

@@ -345,6 +345,7 @@ namespace OlympFoodClient
                 if (ClientLogin != "#DefaultNickname#")
                 {
                     await Navigation.PushAsync(new DishesListPage(ClientLogin, ClientPassword, IsOfflineMode));
+                    StatementText = ClientLogin + ClientPassword + IsOfflineMode.ToString();
                     var existingpages = Navigation.NavigationStack.ToList();
                     for (int i = existingpages.Count - 2; i >= 0; i--)
                     {
@@ -454,7 +455,7 @@ namespace OlympFoodClient
         {
             //Navigation.PopAsync();
 
-            Navigation.PushAsync(new OrdersListPage(ClientLogin, IsOfflineMode));
+            Navigation.PushAsync(new OrdersListPage(ClientLogin, ClientPassword, IsOfflineMode));
             //var existingpages = Navigation.NavigationStack.ToList();
             //Navigation.RemovePage(existingpages[1]);
             //ClientLogin = existingpages[0].ToString();
@@ -534,7 +535,7 @@ namespace OlympFoodClient
                 bool result = false;
                 if (initialized == true) return result;
                 IsBusy = true;
-                IEnumerable<Order> orders = await ordersService.Get(ClientLogin);
+                IEnumerable<Order> orders = await ordersService.Get(ClientLogin, ClientPassword);
 
                 //Orders.Clear();
                 while (Orders.Any())
@@ -548,11 +549,16 @@ namespace OlympFoodClient
                     Orders.Clear();
                     IsOfflineMode = true;
                     IsOnlineMode = false;
+                    var tmpords = await LoadOrdersFromFile();
+                    foreach (Order f in tmpords)
+                        Orders.Add(f);
                 }
                 if (Orders.Count == 0) result = true;
                 else result = false;
-                //StatementText = "Я перед загрузкой в файл";
-                SaveOrdersToFile(Orders);
+                //StatementText = "в файл " + orders.ToList()[0].Name + " " + ClientPassword;
+
+                //if (Orders.Count > 0)
+                    SaveOrdersToFile(Orders);
 
                 IsBusy = false;
                 initialized = true;
@@ -564,6 +570,7 @@ namespace OlympFoodClient
                 while (Orders.Any())
                     Orders.RemoveAt(Orders.Count - 1);
                 var tmpords = await LoadOrdersFromFile();
+                //StatementText = "Я перед загрузкой из файла";
                 //StatementText = await LoadLineFromFile();
                 foreach (Order f in tmpords)
                     Orders.Add(f);
@@ -598,7 +605,7 @@ namespace OlympFoodClient
                     }
                     else
                     {
-                        Order addedOrder = await ordersService.Add(ord);
+                        Order addedOrder = await ordersService.Add(ord, ClientLogin, ClientPassword);
                         if (addedOrder != null)
                         {
                             if (addedOrder.Name == "#RequestException#")
@@ -624,7 +631,7 @@ namespace OlympFoodClient
                 if (ord != null)
                 {
                     IsBusy = true;
-                    Order deletedOrd = await ordersService.Delete(ord.Id);
+                    Order deletedOrd = await ordersService.Delete(ord.Id, ClientLogin, ClientPassword);
                     if (deletedOrd != null)
                     {
                         if (deletedOrd.Name == "#RequestException#")
@@ -635,7 +642,8 @@ namespace OlympFoodClient
                         else
                         {
                             Orders.Remove(deletedOrd);
-                            SaveOrdersToFile(Orders);
+                            //if (Orders.Count > 0)
+                                SaveOrdersToFile(Orders);
                         }
                     }
                     IsBusy = false;
@@ -652,27 +660,33 @@ namespace OlympFoodClient
                 string oneordstr = order.Id.ToString() + "♪" + order.Name + "♪" + order.Phone + "♪" + order.Address + "♪" + order.Dish + "♪" + order.Status + "♪" + order.Nickname;
                 info = info + oneordstr + "►";
             }
-            info = info.Remove(info.Length - 1);
+            if (info.Length > 0) info = info.Remove(info.Length - 1);
             await DependencyService.Get<IFileWorker>().SaveTextAsync(SavedOrdersFilename, info);
         }
 
         private async Task<ObservableCollection<Order>> LoadOrdersFromFile()
         {
             ObservableCollection<Order> reslist = new ObservableCollection<Order>();
-            string info = await DependencyService.Get<IFileWorker>().LoadTextAsync(SavedOrdersFilename);
-            string[] OrdersArray = info.Split('►');
-            foreach (var strorder in OrdersArray)
+            if (await DependencyService.Get<IFileWorker>().ExistsAsync(SavedOrdersFilename))
             {
-                string[] fieldsarr = strorder.Split('♪');
-                Order tmpord = new Order();
-                tmpord.Id = Convert.ToInt32(fieldsarr[0]);
-                tmpord.Name = fieldsarr[1];
-                tmpord.Phone = fieldsarr[2];
-                tmpord.Address = fieldsarr[3];
-                tmpord.Dish = fieldsarr[4];
-                tmpord.Status = fieldsarr[5];
-                tmpord.Nickname = fieldsarr[6];
-                reslist.Add(tmpord);
+                string info = await DependencyService.Get<IFileWorker>().LoadTextAsync(SavedOrdersFilename);
+                if (info.Length > 0)
+                {
+                    string[] OrdersArray = info.Split('►');
+                    foreach (var strorder in OrdersArray)
+                    {
+                        string[] fieldsarr = strorder.Split('♪');
+                        Order tmpord = new Order();
+                        tmpord.Id = Convert.ToInt32(fieldsarr[0]);
+                        tmpord.Name = fieldsarr[1];
+                        tmpord.Phone = fieldsarr[2];
+                        tmpord.Address = fieldsarr[3];
+                        tmpord.Dish = fieldsarr[4];
+                        tmpord.Status = fieldsarr[5];
+                        tmpord.Nickname = fieldsarr[6];
+                        reslist.Add(tmpord);
+                    }
+                }
             }
             return reslist;
         }

@@ -18,4 +18,10 @@ namespace OlympFoodClient
             return this.Login == client.Login;
         }
     }
+
+    public class ClientPlusOrder
+    {
+        public Client client { get; set; }
+        public Order order { get; set; }
+    }
 }

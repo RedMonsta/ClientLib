@@ -11,7 +11,7 @@ namespace OlympFoodClient
     public class DishService
     {
 
-        const string Url = "http://192.168.0.110:52924/api/dish/";
+        const string Url = "http://192.168.0.106:52924/api/dish/";
         //const string Url = "http://192.168.43.33:52924/api/dish/";
 
         private HttpClient GetClient()
@@ -31,12 +31,10 @@ namespace OlympFoodClient
             }
             catch (HttpRequestException e)
             {
-                //DisplayAlert("Alert", "You have been alerted", "OK");
                 var reslist = new List<Dish>();
                 var tmpdish = new Dish { Id = 0, Energy_value = 0, Name = "#RequestException#", Price = 0 };
                 reslist.Add(tmpdish);
                 return reslist;
-                //string result = 
             }
 
             //var tmp = JsonConvert.DeserializeObject<IEnumerable<Dish>>(result);
