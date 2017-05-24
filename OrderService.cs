@@ -4,12 +4,13 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System;
 
 namespace OlympFoodClient
 {
     public class OrderService
     {
-        const string Url = "http://192.168.0.106:52924/api/order/";
+        const string Url = "http://192.168.0.101:52924/api/order/";
         //const string Url = "http://192.168.43.33:52924/api/order/";
 
         private HttpClient GetClient()
@@ -43,7 +44,7 @@ namespace OlympFoodClient
             try
             {
                 string result;
-                result = await client.GetStringAsync(Url + "/" + login + "/" + password);
+                result = await client.GetStringAsync(Url + "/" + login + "/" + Authorizer.EncryptStringByBase64(password));
                 return JsonConvert.DeserializeObject<IEnumerable<Order>>(result);
             }
             catch (HttpRequestException e)
@@ -59,7 +60,7 @@ namespace OlympFoodClient
         {
             HttpClient client = GetClient();
             HttpResponseMessage response;
-            var cltord = new ClientPlusOrder { client = new Client { Login = login, Password = password }, order = ord };
+            var cltord = new ClientPlusOrder { client = new Client { Login = login, Password = Authorizer.EncryptStringByBase64(password) }, order = ord };
             try
             {
                 response = await client.PostAsync(Url,
@@ -80,30 +81,30 @@ namespace OlympFoodClient
             }
         }
 
-        public async Task<Order> Update(Order ord, string login, string password)
-        {
-            HttpClient client = GetClient();
-            HttpResponseMessage response;
-            var cltord = new ClientPlusOrder { client = new Client { Login = login, Password = password }, order = ord };
-            try
-            {
-                response = await client.PutAsync(Url + "/" + ord.Id,
-                    new StringContent(
-                        JsonConvert.SerializeObject(cltord),
-                        Encoding.UTF8, "application/json"));
+        //public async Task<Order> Update(Order ord, string login, string password)
+        //{
+        //    HttpClient client = GetClient();
+        //    HttpResponseMessage response;
+        //    var cltord = new ClientPlusOrder { client = new Client { Login = login, Password = password }, order = ord };
+        //    try
+        //    {
+        //        response = await client.PutAsync(Url + "/" + ord.Id,
+        //            new StringContent(
+        //                JsonConvert.SerializeObject(cltord),
+        //                Encoding.UTF8, "application/json"));
 
-                if (response.StatusCode != HttpStatusCode.OK)
-                    return null;
+        //        if (response.StatusCode != HttpStatusCode.OK)
+        //            return null;
 
-                return JsonConvert.DeserializeObject<Order>(
-                    await response.Content.ReadAsStringAsync());
-            }
-            catch (HttpRequestException e)
-            {
-                var order = new Order { Name = "#RequestException#", Dish = "#RequestException#" };
-                return order;
-            }
-        }
+        //        return JsonConvert.DeserializeObject<Order>(
+        //            await response.Content.ReadAsStringAsync());
+        //    }
+        //    catch (HttpRequestException e)
+        //    {
+        //        var order = new Order { Name = "#RequestException#", Dish = "#RequestException#" };
+        //        return order;
+        //    }
+        //}
 
         public async Task<Order> Delete(int id, string login, string password)
         {
@@ -111,7 +112,7 @@ namespace OlympFoodClient
             HttpResponseMessage response;
             try
             {
-                response = await client.DeleteAsync(Url + "/" + id.ToString() + "/" + login + "/" + password);
+                response = await client.DeleteAsync(Url + "/" + id.ToString() + "/" + login + "/" + Authorizer.EncryptStringByBase64(password));
                 if (response.StatusCode != HttpStatusCode.OK)
                     return null;
 

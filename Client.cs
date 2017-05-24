@@ -11,6 +11,7 @@ namespace OlympFoodClient
         //public int Id { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
+        private int status { get; } = 1;
 
         public override bool Equals(object obj)
         {

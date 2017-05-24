@@ -385,7 +385,7 @@ namespace OlympFoodClient
                     ClientLogin = "#DefaultNickname#";
                     ClientPassword = "#DefaultPassword#";                    
                     IsOfflineMode = await clientService.CheckConnection();
-                    if (!IsOfflineMode) StatementText = "Неверное имя пользователя или пароль";
+                    if (!IsOfflineMode) StatementText = "Нету подключения";
                     //await Navigation.PopAsync();
                     //await Navigation.PushAsync(new DishesListPage("Non authorized", "Non authorized#"));
                 }
@@ -556,7 +556,7 @@ namespace OlympFoodClient
                 if (Orders.Count == 0) result = true;
                 else result = false;
                 //StatementText = "в файл " + orders.ToList()[0].Name + " " + ClientPassword;
-
+                StatementText = Authorizer.EncryptStringByBase64(ClientPassword) + " " + Authorizer.DecryptStringByBase64(Authorizer.EncryptStringByBase64(ClientPassword));
                 //if (Orders.Count > 0)
                     SaveOrdersToFile(Orders);
 

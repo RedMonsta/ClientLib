@@ -9,7 +9,7 @@ namespace OlympFoodClient
 {
     public class ClientService
     {
-        const string Url = "http://192.168.0.106:52924/api/client/";
+        const string Url = "http://192.168.0.101:52924/api/client/";
         //const string Url = "http://192.168.43.33:52924/api/client/";
 
         private HttpClient GetClient()
@@ -41,14 +41,16 @@ namespace OlympFoodClient
 
             try
             {
-                response = await client.GetAsync(Url + "/" + clt.Login + "/" + clt.Password );
+                response = await client.GetAsync(Url + "/" + clt.Login + "/" + Authorizer.EncryptStringByBase64(clt.Password) );
+                //response = await client.GetAsync(Url + "/" + clt.Login + "/" + clt.Password);
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     var getclt = JsonConvert.DeserializeObject<Client>(await response.Content.ReadAsStringAsync());
                     if (getclt == null || getclt.Login == "#NullClient#") return false;
                     if (getclt.Login == "#WrongPassword#") return false;
-                    if (clt.Password == getclt.Password ) return true;                   
+                    if (getclt.Password == "#Authorized#") return true;
                     else return false;
+                    //return true;
                 }
                 else return false;
             }
@@ -62,12 +64,13 @@ namespace OlympFoodClient
         {
             HttpClient client = GetClient();
             HttpResponseMessage response;
+            var sendclt = new Client { Login = clt.Login, Password = Authorizer.EncryptStringByBase64(clt.Password) };
 
             try
             {
                 response = await client.PostAsync(Url,
                     new StringContent(
-                        JsonConvert.SerializeObject(clt),
+                        JsonConvert.SerializeObject(sendclt),
                         Encoding.UTF8, "application/json"));
 
                 if (response.StatusCode != HttpStatusCode.OK)
