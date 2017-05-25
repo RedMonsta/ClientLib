@@ -1,5 +1,3 @@
-D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\bin\Debug\OlympFoodClient.dll
-D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\bin\Debug\OlympFoodClient.pdb
 D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\bin\Debug\Newtonsoft.Json.dll
 D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\bin\Debug\Xamarin.Forms.Core.dll
 D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\bin\Debug\Xamarin.Forms.Platform.dll
@@ -14,8 +12,6 @@ D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClien
 D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\obj\Debug\OlympFoodClient.App.xaml.g.cs
 D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\obj\Debug\OlympFoodClient.DishesListPage.xaml.g.cs
 D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\obj\Debug\OlympFoodClient.DishPage.xaml.g.cs
-D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\obj\Debug\OlympFoodClient.dll
-D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\obj\Debug\OlympFoodClient.pdb
 D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\obj\Debug\OlympFoodClient.OrderPage.xaml.g.cs
 D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\obj\Debug\OlympFoodClient.OrdersListPage.xaml.g.cs
 D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\obj\Debug\OlympFoodClient.ClientPage.xaml.g.cs
@@ -25,3 +21,7 @@ D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClien
 D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\bin\Debug\Plugin.Settings.dll
 D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\bin\Debug\Plugin.Settings.xml
 D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\bin\Debug\Plugin.Settings.Abstractions.xml
+D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\bin\Debug\OlympFoodClient.dll
+D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\bin\Debug\OlympFoodClient.pdb
+D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\obj\Debug\OlympFoodClient.dll
+D:\БГУИР\GitHub\CourseProject\HFClient\OlympFoodMobileClient\OlympFoodClient\OlympFoodClient\obj\Debug\OlympFoodClient.pdb

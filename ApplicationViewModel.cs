@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Plugin.Settings;
 using System;
+using System.Threading;
 
 
 namespace OlympFoodClient
@@ -15,7 +16,9 @@ namespace OlympFoodClient
     {
         bool initialized = false;
         Dish selectedDish;
+        double progress;
         Order selectedOrder;
+        TextDish textSelectedDish;
         string choosendishname;
         private bool isBusy;
         private bool isExistUser;
@@ -34,6 +37,7 @@ namespace OlympFoodClient
         //string NicknameFromFile = "#DefaultNickname#";
 
         public ObservableCollection<Dish> Dishes { get; set; }
+        public ObservableCollection<TextDish> TextDishes { get; set; }
         public ObservableCollection<Order> Orders { get; set; }
         DishService dishesService = new DishService();
         OrderService ordersService = new OrderService();
@@ -55,6 +59,12 @@ namespace OlympFoodClient
         public ICommand DishToOrderCommand { protected set; get; }
 
         public INavigation Navigation { get; set; }
+
+        public double ProgressValue
+        {
+            get { return progress; }
+            set { OnPropertyChanged("ProgressValue"); progress = value; }
+        }
 
         public bool IsOfflineMode
         {
@@ -122,11 +132,13 @@ namespace OlympFoodClient
         {
             Dishes = new ObservableCollection<Dish>();
             Orders = new ObservableCollection<Order>();
+            TextDishes = new ObservableCollection<TextDish>();
             IsBusy = false;
             IsExistUser = false;
             IsOfflineMode = false;
             IsOnlineMode = !IsOfflineMode;
-            StatementText = "Введите новый никнейм";
+            progress = 0;
+            StatementText = "Enter a new nickname";
             BackCommand = new Command(Back);
             UpdateCommand = new Command(UpdateDishes);
             CreateOrderCommand = new Command(CreateOrder);
@@ -153,7 +165,7 @@ namespace OlympFoodClient
             }
             if (pagetype == "clientpage")
             {
-                StatementText = "Авторизация";
+                StatementText = "Authorization";
             }
         }
 
@@ -162,7 +174,9 @@ namespace OlympFoodClient
         {
             Dishes = new ObservableCollection<Dish>();
             Orders = new ObservableCollection<Order>();
+            TextDishes = new ObservableCollection<TextDish>();
             IsBusy = false;
+            progress = 0;
             IsOfflineMode = false;
             IsOnlineMode = !IsOfflineMode;
             BackCommand = new Command(Back);
@@ -205,7 +219,7 @@ namespace OlympFoodClient
             ClientLogin = "#DefaultNickname#";
             ClientPassword = "#DefaultPassword#";
             await DependencyService.Get<IFileWorker>().SaveTextAsync(SettingsFilename, ClientLogin + " " + ClientPassword);
-            StatementText = "Авторизация";
+            StatementText = "Authorization";
             await Navigation.PushAsync(new ClientPage(IsOfflineMode));
             var existingpages = Navigation.NavigationStack.ToList();
             //Navigation.RemovePage(existingpages[0]);
@@ -252,45 +266,61 @@ namespace OlympFoodClient
         public async void RegistrateClient(object cliObject)
         {
             Client client = cliObject as Client;
-
+            StatementText = "Registration";
             if (client != null)
             {
                 IsBusy = true;
-                //IsExistUser = false;
-                Client regclt = await clientService.Registrate(client);
-                if (regclt.Login == "#RequestException#")
+                if (client.Login != "" && client.Password != "" && client.Password != null && client.Login != null)
                 {
-                    IsOfflineMode = true;
-                    ClientLogin = "#DefaultNickname#";
-                    ClientPassword = "#DefaultPassword#";
-                }
-                else
-                {
-                    if (regclt.Login == "#ExistNickname#")
+                    if (SpellChecker.CheckNickname(client.Login) && SpellChecker.CheckPassword(client.Password))
                     {
-                        // ClientLogin = "Such user is exist";     
-                        ClientLogin = "#DefaultNickname#";
-                        ClientPassword = "#DefaultPassword#";
-                        //var existingpages = Navigation.NavigationStack.ToList();
-                        IsExistUser = true;
-                        StatementText = "Пользователь с таким ником уже существует";
-                        //lblMessageText = "Пользователь с таким ником уже существует";
-                    }
-                    else
-                    {
-                        ClientLogin = client.Login;
-                        ClientPassword = client.Password;
-                        IsExistUser = false;
-                        await Navigation.PushAsync(new DishesListPage(ClientLogin, ClientPassword, IsOfflineMode));
-                        var existingpages = Navigation.NavigationStack.ToList();
-                        //StatementText = "Введите новый никнейм";
-                        for (int i = existingpages.Count - 2; i >= 0; i--)
+                        Client regclt = await clientService.Registrate(client);
+                        if (regclt.Login == "#RequestException#")
                         {
-                            Navigation.RemovePage(existingpages[i]);
+                            IsOfflineMode = true;
+                            ClientLogin = "#DefaultNickname#";
+                            ClientPassword = "#DefaultPassword#";
+                            StatementText = "Registration error.";
+                        }
+                        else
+                        {
+                            if (regclt.Login == "#ExistNickname#")
+                            {
+                                // ClientLogin = "Such user is exist";     
+                                ClientLogin = "#DefaultNickname#";
+                                ClientPassword = "#DefaultPassword#";
+                                //var existingpages = Navigation.NavigationStack.ToList();
+                                IsExistUser = true;
+                                StatementText = "Such user is exists.";
+                                //lblMessageText = "Пользователь с таким ником уже существует";
+                            }
+                            else
+                            {
+                                ClientLogin = client.Login;
+                                ClientPassword = client.Password;
+                                IsExistUser = false;
+                                await Navigation.PushAsync(new DishesListPage(ClientLogin, ClientPassword, IsOfflineMode));
+                                var existingpages = Navigation.NavigationStack.ToList();
+                                //for (int i = 0; i < existingpages.Count - 2; i++)
+                                //{
+                                //    Navigation.RemovePage(existingpages[0]);
+                                //}
+                                //StatementText = "Введите новый никнейм";
+                                for (int i = existingpages.Count - 2; i >= 0; i--)
+                                {
+                                    Navigation.RemovePage(existingpages[i]);
+                                }
+                            }
                         }
                     }
+                    else StatementText = "Incorrect login or password. Enter symbols A-z0-9 and_. Login should be at least 3 symbols length, password - 8.";
                 }
+                else StatementText = "Please, enter a nickname and password";
+                //else if (!SpellChecker.CheckNickname(client.Login) || !SpellChecker.CheckPassword(client.Password)) StatementText = "Incorrect login or password. Enter symbols A-Za-z0-9 and_. Login should be at least 3 symbols length, password - 8.";
+                //else if (!SpellChecker.CheckNickname(client.Login)) StatementText = "Incorrect login";
+                //else if (!SpellChecker.CheckPassword(client.Password)) StatementText = "Incorrect password";
                 IsBusy = false;
+
             }
         }
 
@@ -304,7 +334,10 @@ namespace OlympFoodClient
 
         public async void RunApp()
         {
+            IsBusy = true;
+            ProgressValue = 0.1;
             IsOfflineMode = await clientService.CheckConnection();
+            ProgressValue = 0.4;
             if (!IsOfflineMode)
             {
                 if (ClientLogin == "")
@@ -317,16 +350,19 @@ namespace OlympFoodClient
                     //StatementText = ClientLogin;
                     var client = new Client { Login = ClientLogin, Password = ClientPassword };
                     IsBusy = true;
+                    ProgressValue = 0.8;
                     bool isAuthorized = await clientService.Check(client);
                     if (isAuthorized)
                     {
                         // await Navigation.PopAsync();
                         await Navigation.PushAsync(new DishesListPage(ClientLogin, ClientPassword, IsOfflineMode));
+                        var existingpages = Navigation.NavigationStack.ToList();
+                        Navigation.RemovePage(existingpages[0]);
                     }
                     else
                     {
                         ClientLogin = "#DefaultNickname#";
-                        ClientPassword = "#DefaultPassword#";
+                        ClientPassword = "#DefaultPassword#";                       
                         await Navigation.PushAsync(new ClientPage(IsOfflineMode));
                     }
                     IsBusy = false;
@@ -360,65 +396,101 @@ namespace OlympFoodClient
                     Navigation.RemovePage(existingpages[0]);
                 }
             }
+            IsBusy = false;
             //await Navigation.PushAsync(new DishesListPage(ClientLogin, ClientPassword));
         }
 
         public async void CheckClient(object cliObject)
         {
-            Client client = cliObject as Client;           
+            Client client = cliObject as Client;
+            StatementText = "Authorization";
+            IsBusy = true;
             if (client != null)
             {
-                IsBusy = true;
-                bool isAuthorized = await clientService.Check(client);
-                //string AuthLine = await clientService.Check(client);
-                if (isAuthorized)
+                if (client.Login != "" && client.Password != "" && client.Password != null && client.Login != null)
                 {
-                    ClientLogin = client.Login;
-                    ClientPassword = client.Password;
-                    //await Navigation.PopAsync();                   
-                    await Navigation.PushAsync(new DishesListPage(ClientLogin, ClientPassword, IsOfflineMode));
-                    //await Navigation.NavigationStack[0].
+                    if (SpellChecker.CheckNickname(client.Login) && SpellChecker.CheckPassword(client.Password))
+                    {
+                        //IsBusy = true;
+                        bool isAuthorized = await clientService.Check(client);
+                        //string AuthLine = await clientService.Check(client);
+                        if (isAuthorized)
+                        {
+                            ClientLogin = client.Login;
+                            ClientPassword = client.Password;
+                            //await Navigation.PopAsync();                   
+                            await Navigation.PushAsync(new DishesListPage(ClientLogin, ClientPassword, IsOfflineMode));
+                            //await Navigation.NavigationStack[0].
+                        }
+                        else
+                        {
+
+                            ClientLogin = "#DefaultNickname#";
+                            ClientPassword = "#DefaultPassword#";
+                            IsOfflineMode = await clientService.CheckConnection();
+                            if (!IsOfflineMode) StatementText = "Incorrect login or password. Please, try again.";
+                            //await Navigation.PopAsync();
+                            //await Navigation.PushAsync(new DishesListPage("Non authorized", "Non authorized#"));
+                        }
+
+                        var existingpages = Navigation.NavigationStack.ToList();
+                        for (int i = existingpages.Count - 2; i >= 0; i--)
+                        {
+                            Navigation.RemovePage(existingpages[i]);
+                        }
+                    }
+                    else StatementText = "Incorrect login or password. Enter symbols A-Za-z0-9 and_. Login should have at least 3 symbols length, password - 8.";
                 }
-                else
-                {
-                    
-                    ClientLogin = "#DefaultNickname#";
-                    ClientPassword = "#DefaultPassword#";                    
-                    IsOfflineMode = await clientService.CheckConnection();
-                    if (!IsOfflineMode) StatementText = "Нету подключения";
-                    //await Navigation.PopAsync();
-                    //await Navigation.PushAsync(new DishesListPage("Non authorized", "Non authorized#"));
-                }
+                else StatementText = "Please, enter a nickname and password";
+                //else if (!SpellChecker.CheckNickname(client.Login) || !SpellChecker.CheckPassword(client.Password)) StatementText = "Incorrect login or password. Enter symbols A-Za-z0-9 and_. Login should have at least 3 symbols length, password - 8.";
                 IsBusy = false;
-                var existingpages = Navigation.NavigationStack.ToList();
-                for (int i = existingpages.Count - 2; i >= 0; i--)
-                {
-                    Navigation.RemovePage(existingpages[i]);
-                }
             }
         }
 
-        public Dish SelectedDish
+        //public Dish SelectedDish
+        //{
+        //    get { return selectedDish; }
+        //    set
+        //    {
+        //        if (selectedDish != value)
+        //        {
+        //            Dish tempDish = new Dish()
+        //            {
+        //                Id = value.Id,
+        //                Name = value.Name,
+        //                Energy_value = value.Energy_value,
+        //                Price = value.Price
+        //            };
+        //            selectedDish = null;
+        //            choosendishname = tempDish.Name;
+        //            OnPropertyChanged("SelectedDish");
+        //            IsBusy = false;
+        //            //Navigation.PushAsync(new DishPage(textSelectedDish, this));
+        //        }
+        //    }
+        //}
+
+        public TextDish TextSelectedDish
         {
-            get { return selectedDish; }
+            get { return textSelectedDish; }
             set
             {
-                if (selectedDish != value)
+                if (textSelectedDish != value)
                 {
-                    Dish tempDish = new Dish()
+                    TextDish tempDish = new TextDish()
                     {
-                        Id = value.Id,
                         Name = value.Name,
                         Energy_value = value.Energy_value,
                         Price = value.Price
                     };
-                    selectedDish = null;
                     choosendishname = tempDish.Name;
-                    OnPropertyChanged("SelectedDish");
-                    Navigation.PushAsync(new DishPage(tempDish, this));
+                    textSelectedDish = new TextDish { Name = tempDish.Name, Energy_value = tempDish.Energy_value, Price = tempDish.Price };
+                    OnPropertyChanged("TextSelectedDish");
+                    StatementText = "choosen " + textSelectedDish.Name + choosendishname;
+                    Navigation.PushAsync(new DishPage(textSelectedDish, this));
                 }
             }
-        }       
+        }
 
         public Order SelectedOrder
         {
@@ -472,7 +544,9 @@ namespace OlympFoodClient
 
         private void Back()
         {
+            IsBusy = true;
             Navigation.PopAsync();
+            IsBusy = false;
         }
 
         public async void UpdateDishes()
@@ -502,18 +576,24 @@ namespace OlympFoodClient
 
         public async Task GetDishes()
         {
+            IsBusy = true;
             if (!IsOfflineMode)
             {
                 if (initialized == true) return;
-                IsBusy = true;
+                //IsBusy = true;
                 IEnumerable<Dish> dishes = await dishesService.Get();
 
                 //Dishes.Clear();
                 while (Dishes.Any())
                     Dishes.RemoveAt(Dishes.Count - 1);
+                TextDishes.Clear();
 
                 foreach (Dish f in dishes)
+                {
                     Dishes.Add(f);
+                    var tmpdish = new TextDish { Name = f.Name, Energy_value = f.Energy_value + " Kcal", Price = f.Price + " BYN" };
+                    TextDishes.Add(tmpdish);
+                }
 
                 if (Dishes.Count == 1 && Dishes[0].Name == "#RequestException#")
                 {
@@ -525,6 +605,7 @@ namespace OlympFoodClient
                 IsBusy = false;
                 initialized = true;
             }
+            IsBusy = false;
             //else 
         }
 
@@ -556,7 +637,7 @@ namespace OlympFoodClient
                 if (Orders.Count == 0) result = true;
                 else result = false;
                 //StatementText = "в файл " + orders.ToList()[0].Name + " " + ClientPassword;
-                StatementText = Authorizer.EncryptStringByBase64(ClientPassword) + " " + Authorizer.DecryptStringByBase64(Authorizer.EncryptStringByBase64(ClientPassword));
+                //StatementText = Authorizer.EncryptStringByBase64(ClientPassword) + " " + Authorizer.DecryptStringByBase64(Authorizer.EncryptStringByBase64(ClientPassword));
                 //if (Orders.Count > 0)
                     SaveOrdersToFile(Orders);
 
@@ -586,41 +667,62 @@ namespace OlympFoodClient
             if (!IsOfflineMode)
             {
                 Order ord = ordObject as Order;
-                ord.Status = "Ожидает отправки";
-                //ord.Nickname = "RedMonsta";
+                ord.Status = "In processing";
                 ord.Nickname = ClientLogin;
 
                 if (ord != null)
                 {
                     IsBusy = true;
-                    if (ord.Id > 0)
+                    if ((ord.Phone != "" && ord.Name != "" && ord.Address != "" && ord.Dish != "") && (ord.Phone != null && ord.Name != null && ord.Address != null) )
                     {
-                        //Order updatedOrder = await ordersService.Update(ord);
-                        //if (updatedOrder != null)
-                        //{
-                        //    int pos = Orders.IndexOf(updatedOrder);
-                        //    Orders.RemoveAt(pos);
-                        //    Orders.Insert(pos, updatedOrder);
-                        //}
-                    }
-                    else
-                    {
-                        Order addedOrder = await ordersService.Add(ord, ClientLogin, ClientPassword);
-                        if (addedOrder != null)
+                        if (SpellChecker.CheckName(ord.Name))
                         {
-                            if (addedOrder.Name == "#RequestException#")
+                            if (SpellChecker.CheckPhone(ord.Phone))
                             {
-                                IsOfflineMode = true;
-                                IsOnlineMode = false;
+                                if (SpellChecker.CheckAddress(ord.Address))
+                                {
+                                    if (ord.Id > 0) { /*Update*/ }
+                                    else
+                                    {
+                                        Order addedOrder = await ordersService.Add(ord, ClientLogin, ClientPassword);
+                                        if (addedOrder != null)
+                                        {
+                                            if (addedOrder.Name == "#RequestException#")
+                                            {
+                                                IsOfflineMode = true;
+                                                IsOnlineMode = false;
+                                            }
+                                            else
+                                            {
+                                                Orders.Add(addedOrder);
+
+                                                GoToOrdersList();
+
+                                                //Back(); //Можно заменить на загрузку страницы заказов
+                                            }
+                                        }
+
+                                    }
+                                }
+                                else StatementText = "Incorrect address. Please enter a right address.";
                             }
-                            else Orders.Add(addedOrder);
+                            else StatementText = "Incorrect phone format. Please enter a (29|44|33|25)-code and 7 numbers of phone.";
                         }
-                            
+                        else StatementText = "Incorrect name. Please enter a right name.";
                     }
+                    else StatementText = "Some fields are empty. You should fill all fields.";
                     IsBusy = false;
                 }
-                Back();
+                //Back();
             } 
+        }
+
+        private async void GoToOrdersList()
+        {
+            var existingpages = Navigation.NavigationStack.ToList();
+            Navigation.InsertPageBefore(new OrdersListPage(ClientLogin, ClientPassword, false), existingpages[existingpages.Count() - 1]);
+            Navigation.RemovePage(existingpages[existingpages.Count() - 2]);
+            await Navigation.PopAsync();
         }
 
         private async void DeleteOrder(object ordObject)

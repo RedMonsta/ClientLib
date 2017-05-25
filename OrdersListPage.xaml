@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="OlympFoodClient.OrdersListPage"  Title="Ваши заказы">
+             x:Class="OlympFoodClient.OrdersListPage"  Title="Your orders">
     <StackLayout x:Name="slMain">
-        <Label x:Name="lblMessage" Text="{Binding StatementText}" />
-        <Button Text="Сменить пользователя" Command="{Binding ExitClientCommand}" IsEnabled="{Binding IsLoaded}" IsVisible="{Binding IsOnlineMode}"/>
-        <Button Text="Заказать" Command="{Binding CreateOrderCommand}" IsEnabled="{Binding IsLoaded}" IsVisible="{Binding IsOnlineMode}"/>
-        <Label x:Name="lblError" IsVisible="False" Text="Список заказов пуст" FontSize="Large" />
+        <!--<Label x:Name="lblMessage" Text="{Binding StatementText}" />-->
+        <Button Text="Change user" Command="{Binding ExitClientCommand}" IsEnabled="{Binding IsLoaded}" IsVisible="{Binding IsOnlineMode}"/>
+        <!--<Button Text="Make an order" Command="{Binding CreateOrderCommand}" IsEnabled="{Binding IsLoaded}" IsVisible="{Binding IsOnlineMode}"/>-->
+        <Button Text="Back to dishes list" Command="{Binding BackCommand}" IsEnabled="{Binding IsLoaded}"/>
+        <Label x:Name="lblError" IsVisible="False" Text="Order list is empty" FontSize="Large" />
         <ListView x:Name="ordersList" ItemsSource="{Binding Orders}"
               SelectedItem="{Binding SelectedOrder, Mode=TwoWay}" HasUnevenRows="True">
             <ListView.ItemTemplate>
@@ -27,12 +28,12 @@
         </ListView>
         <StackLayout IsVisible="{Binding IsBusy}"
                     HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Padding="20">
-            <Label Text="Загрузка данных..." TextColor="Gray" HorizontalOptions="Center" />
+            <Label Text="Loading data..." TextColor="Gray" HorizontalOptions="Center" />
             <ActivityIndicator IsRunning="{Binding IsBusy}" Color="Accent" >
             </ActivityIndicator>
         </StackLayout>
-        <Label IsVisible="{Binding IsOfflineMode}" Text="Вы находитесь в оффлайн-режиме" />
-        <Label IsVisible="{Binding IsOnlineMode}" Text="Вы перешли в онлайн-режим" />
-        <Button IsVisible="{Binding IsOfflineMode}" Text="Переподключиться" Command="{Binding ViewModel.TryToConnectCommand}"/>
+        <Label IsVisible="{Binding IsOfflineMode}" Text="Offline-mode" />
+        <Label IsVisible="{Binding IsOnlineMode}" Text="Online-mode" />
+        <Button IsVisible="{Binding IsOfflineMode}" Text="Reconnect" Command="{Binding ViewModel.TryToConnectCommand}"/>
     </StackLayout>
 </ContentPage>

@@ -44,5 +44,35 @@ namespace OlympFoodClient
             ViewModel = viewModel;
             this.BindingContext = this;
         }
+
+        private void EntryPhone_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string text = (sender as Entry).Text;     
+            if (text.Length > 9)      
+            {
+                text = text.Remove(text.Length - 1);
+                (sender as Entry).Text = text;       
+            }
+        }
+
+        private void EntryName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string text = (sender as Entry).Text;
+            if (text.Length > 36)
+            {
+                text = text.Remove(text.Length - 1);
+                (sender as Entry).Text = text;
+            }
+        }
+
+        private void EntryAddress_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string text = (sender as Entry).Text;
+            if (text.Length > 50)
+            {
+                text = text.Remove(text.Length - 1);
+                (sender as Entry).Text = text;
+            }
+        }
     }
 }

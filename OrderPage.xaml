@@ -1,29 +1,31 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="OlympFoodClient.OrderPage" Title="Информация о заказе">
+             x:Class="OlympFoodClient.OrderPage" Title="Order info">
     <StackLayout>
         <!--<Label x:Name="lblMessage" Text="{Binding ViewModel.StatementText}" />-->
         <StackLayout>
-            <Label Text="Имя" />
-            <Entry Text="{Binding Path=OrderParam.Name}" FontSize="Medium" IsVisible="{Binding EntriesOn}"/>
+            <Label x:Name="lblMessage" Text="{Binding ViewModel.StatementText}" />
+            <Label Text="Your name" />
+            <Entry Text="{Binding Path=OrderParam.Name}" FontSize="Medium" IsVisible="{Binding EntriesOn}" TextChanged="EntryName_TextChanged"/>
             <Label Text="{Binding Path=OrderParam.Name}" FontSize="Medium" IsVisible="{Binding LabelsOn}"/>
-            <Label Text="Телефон" />
-            <Entry Text="{Binding Path=OrderParam.Phone}" FontSize="Medium" IsVisible="{Binding EntriesOn}"/>
+            <Label Text="Phone" />
+            <Entry Text="{Binding Path=OrderParam.Phone}" Keyboard="Telephone" Placeholder="(xx)yyyyyyy" FontSize="Medium" IsVisible="{Binding EntriesOn}" TextChanged="EntryPhone_TextChanged"/>
             <Label Text="{Binding Path=OrderParam.Phone}" FontSize="Medium" IsVisible="{Binding LabelsOn}"/>
-            <Label Text="Адрес" />
-            <Entry Text="{Binding Path=OrderParam.Address}" FontSize="Medium" IsVisible="{Binding EntriesOn}"/>
+            <Label Text="Address" />
+            <Entry Text="{Binding Path=OrderParam.Address}" FontSize="Medium" IsVisible="{Binding EntriesOn}" TextChanged="EntryAddress_TextChanged"/>
             <Label Text="{Binding Path=OrderParam.Address}" FontSize="Medium" IsVisible="{Binding LabelsOn}"/>
-            <Label Text="Выбранное блюдо" />
-            <Entry Text="{Binding Path=OrderParam.Dish}" FontSize="Medium" IsVisible="{Binding EntriesOn}"/>
-            <Label Text="{Binding Path=OrderParam.Dish}" FontSize="Medium" IsVisible="{Binding LabelsOn}"/>
+            <Label Text="Choosen dish" />
+            <!--<Entry Text="{Binding Path=OrderParam.Dish}" FontSize="Medium" IsVisible="{Binding EntriesOn}"/>
+            <Label Text="{Binding Path=OrderParam.Dish}" FontSize="Medium" IsVisible="{Binding LabelsOn}"/>-->
+            <Label Text="{Binding Path=OrderParam.Dish}" FontSize="Medium" />
         </StackLayout>
         <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
-            <Button Text="Сохранить" Command="{Binding ViewModel.SaveOrderCommand}" CommandParameter="{Binding OrderParam}" IsVisible="{Binding EntriesOn}"/>
-            <Button Text="Удалить" Command="{Binding ViewModel.DeleteOrderCommand}" CommandParameter="{Binding OrderParam}" IsVisible="{Binding ViewModel.IsOnlineMode}"/>
-            <Button Text="Назад" Command="{Binding Path=ViewModel.BackCommand}" />
+            <Button Text="Order" Command="{Binding ViewModel.SaveOrderCommand}" CommandParameter="{Binding OrderParam}" IsVisible="{Binding EntriesOn}"/>
+            <Button Text="Clear" Command="{Binding ViewModel.DeleteOrderCommand}" CommandParameter="{Binding OrderParam}" IsVisible="{Binding ViewModel.IsOnlineMode}"/>
+            <Button Text="Back" Command="{Binding Path=ViewModel.BackCommand}" />
         </StackLayout>
-        <Label IsVisible="{Binding ViewModel.IsOfflineMode}" Text="Вы находитесь в оффлайн-режиме" />
-        <Label IsVisible="{Binding ViewModel.IsOnlineMode}" Text="Вы перешли в онлайн-режим" />
+        <Label IsVisible="{Binding ViewModel.IsOfflineMode}" Text="Offline-mode" />
+        <Label IsVisible="{Binding ViewModel.IsOnlineMode}" Text="Online-mode" />
     </StackLayout>
 </ContentPage>

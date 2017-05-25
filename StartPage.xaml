@@ -1,8 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="OlympFoodClient.StartPage" Title="Стартовая страница">
+             x:Class="OlympFoodClient.StartPage" Title="Load app...">
     
-    <Button Text="Вперёд!" Command="{Binding StartCommand}" />
-    
+    <StackLayout>
+        <Button Text="Run!" Command="{Binding StartCommand}" IsEnabled="{Binding IsLoaded}" BackgroundColor="Orange"/>
+        <ProgressBar Progress="{Binding ProgressValue}" />
+    </StackLayout>
 </ContentPage>

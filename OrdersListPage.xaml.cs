@@ -30,7 +30,7 @@ namespace OlympFoodClient
             viewModel = new ApplicationViewModel("orderslistpage") { Navigation = this.Navigation, ClientLogin = login, ClientPassword = passwd, IsOfflineMode = isoffline };           
             BindingContext = viewModel;
             //Title = "Заказы пользователя " + login;
-            Title = login;
+            Title = login + " orders";
             //if (isEmpty) lblError.IsVisible = true;
             //else lblError.IsVisible = false;
             //lblError.IsVisible = true;

@@ -17,7 +17,7 @@ namespace OlympFoodClient
 
             //MainPage = new NavigationPage(new ClientPage());
 
-            MainPage = new NavigationPage(new StartPage());
+            MainPage = new NavigationPage(new StartPage());// { BarBackgroundColor = Color.FromHex("#fa7a09") };
         }
 
         protected override void OnStart()

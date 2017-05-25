@@ -1,18 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="OlympFoodClient.ClientPage" Title="Вход в профиль">
+             x:Class="OlympFoodClient.ClientPage" Title="Authorization">
     <StackLayout>
         <Label x:Name="lblMessage" Text="{Binding ViewModel.StatementText}" />
-        <Label x:Name="lblLogin" Text="Логин" />
+        <Label x:Name="lblLogin" Text="Login" />
         <Entry Text="{Binding Path=ClientParam.Login}" FontSize="Medium" />
-        <Label Text="Пароль" />
+        <Label Text="Password" />
         <Entry Text="{Binding Path=ClientParam.Password}" FontSize="Medium" IsPassword="True" />
-        <Button Text="Войти" Command="{Binding ViewModel.SignInCommand}" CommandParameter="{Binding ClientParam}" IsEnabled="{Binding ViewModel.IsOnlineMode}" />
-        <Button Text="Регистрация" Command="{Binding ViewModel.GoToRegistrationCommand}" IsEnabled="{Binding ViewModel.IsOnlineMode}"/>
+        <Button Text="Sign In" Command="{Binding ViewModel.SignInCommand}" CommandParameter="{Binding ClientParam}" IsVisible="{Binding ViewModel.IsOnlineMode}" IsEnabled="{Binding ViewModel.IsLoaded}" />
+        <Button Text="Registration" Command="{Binding ViewModel.GoToRegistrationCommand}" IsVisible="{Binding ViewModel.IsOnlineMode}" IsEnabled="{Binding ViewModel.IsLoaded}"/>
 
-        <Label IsVisible="{Binding ViewModel.IsOfflineMode}" Text="Вы находитесь в оффлайн-режиме" />
-        <Button IsVisible="{Binding ViewModel.IsOfflineMode}" Text="Переподключиться" Command="{Binding ViewModel.TryToConnectCommand}"/>
+        <Label IsVisible="{Binding ViewModel.IsOfflineMode}" Text="Offline-mode" />
+        <Button IsVisible="{Binding ViewModel.IsOfflineMode}" Text="Reconnect" Command="{Binding ViewModel.TryToConnectCommand}"/>
 
     </StackLayout>
 </ContentPage>

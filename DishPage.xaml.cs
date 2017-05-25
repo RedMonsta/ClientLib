@@ -12,10 +12,10 @@ namespace OlympFoodClient
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class DishPage : ContentPage
     {
-        public Dish Model { get; private set; }
+        public TextDish Model { get; private set; }
         public ApplicationViewModel ViewModel { get; private set; }
 
-        public DishPage(Dish model, ApplicationViewModel viewModel)
+        public DishPage(TextDish model, ApplicationViewModel viewModel)
         {
             InitializeComponent();
             Model = model;

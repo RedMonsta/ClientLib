@@ -9,7 +9,7 @@ namespace OlympFoodClient
 {
     public class ClientService
     {
-        const string Url = "http://192.168.0.101:52924/api/client/";
+        const string Url = "http://192.168.0.108:52924/api/client/";
         //const string Url = "http://192.168.43.33:52924/api/client/";
 
         private HttpClient GetClient()

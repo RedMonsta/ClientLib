@@ -19,4 +19,11 @@ namespace OlympFoodClient
             return this.Id == dish.Id;
         }
     }
+
+    public class TextDish
+    {
+        public string Name { get; set; }
+        public string Energy_value { get; set; }
+        public string Price { get; set; }
+    }
 }

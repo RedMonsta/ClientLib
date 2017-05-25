@@ -16,7 +16,10 @@ namespace OlympFoodClient
 
         protected override async void OnAppearing()
         {
-            await viewModel.GetDishes();            
+            await viewModel.GetDishes();
+            viewModel.IsBusy = false;
+            //viewModel.IsLoaded = false;
+            //dishesList.ItemTemplate
             base.OnAppearing();
         }
 
