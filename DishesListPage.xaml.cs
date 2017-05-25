@@ -27,10 +27,40 @@ namespace OlympFoodClient
         {
             InitializeComponent();
             //ClientLogin = login;
-            viewModel = new ApplicationViewModel("disheslistpage", login, passwd) {  Navigation = this.Navigation, IsOfflineMode = isoffline };
+            viewModel = new ApplicationViewModel("disheslistpage", login, passwd) { Navigation = this.Navigation, IsOfflineMode = isoffline };
             BindingContext = viewModel;
-            lblLogin.Text = login;
+            lblLogin.Text = "You enter as: " + login;
             //Title = login;
+        }
+
+        private void ButtonReconnect_Clicked(object sender, EventArgs e)
+        {
+            (sender as Button).BackgroundColor = Color.LightGray;
+            Device.StartTimer(TimeSpan.FromSeconds(0.25), () =>
+            {
+                (sender as Button).BackgroundColor = Color.DarkGray;
+                return false;
+            });
+        }
+
+        private void ButtonOfflineOrders_Clicked(object sender, EventArgs e)
+        {
+            (sender as Button).BackgroundColor = Color.FromHex("#fa7a09");
+            Device.StartTimer(TimeSpan.FromSeconds(0.25), () =>
+            {
+                (sender as Button).BackgroundColor = Color.DarkOrange;
+                return false;
+            });
+        }
+
+        private void Button_Clicked(object sender, EventArgs e)
+        {
+            (sender as Button).BackgroundColor = Color.FromHex("#fa7a09");
+            Device.StartTimer(TimeSpan.FromSeconds(0.25), () =>
+            {
+                (sender as Button).BackgroundColor = Color.DarkOrange;
+                return false;
+            });
         }
     }
 }

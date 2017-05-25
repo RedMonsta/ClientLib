@@ -1,31 +1,37 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="OlympFoodClient.OrderPage" Title="Order info">
+             x:Class="OlympFoodClient.OrderPage" Title="Order info" BackgroundImage="back.png">
     <StackLayout>
         <!--<Label x:Name="lblMessage" Text="{Binding ViewModel.StatementText}" />-->
         <StackLayout>
-            <Label x:Name="lblMessage" Text="{Binding ViewModel.StatementText}" />
-            <Label Text="Your name" />
-            <Entry Text="{Binding Path=OrderParam.Name}" FontSize="Medium" IsVisible="{Binding EntriesOn}" TextChanged="EntryName_TextChanged"/>
-            <Label Text="{Binding Path=OrderParam.Name}" FontSize="Medium" IsVisible="{Binding LabelsOn}"/>
-            <Label Text="Phone" />
-            <Entry Text="{Binding Path=OrderParam.Phone}" Keyboard="Telephone" Placeholder="(xx)yyyyyyy" FontSize="Medium" IsVisible="{Binding EntriesOn}" TextChanged="EntryPhone_TextChanged"/>
-            <Label Text="{Binding Path=OrderParam.Phone}" FontSize="Medium" IsVisible="{Binding LabelsOn}"/>
-            <Label Text="Address" />
-            <Entry Text="{Binding Path=OrderParam.Address}" FontSize="Medium" IsVisible="{Binding EntriesOn}" TextChanged="EntryAddress_TextChanged"/>
-            <Label Text="{Binding Path=OrderParam.Address}" FontSize="Medium" IsVisible="{Binding LabelsOn}"/>
-            <Label Text="Choosen dish" />
-            <!--<Entry Text="{Binding Path=OrderParam.Dish}" FontSize="Medium" IsVisible="{Binding EntriesOn}"/>
+            <StackLayout>
+                <Label x:Name="lblMessage" Text="{Binding ViewModel.StatementText}" TextColor="#fa7a09"/>
+                <Label Text="Your name" TextColor="White"/>
+                <Entry Text="{Binding Path=OrderParam.Name}" FontSize="Medium" IsVisible="{Binding EntriesOn}" TextChanged="EntryName_TextChanged" BackgroundColor="White"/>
+                <Label Text="{Binding Path=OrderParam.Name}" FontSize="Medium" IsVisible="{Binding LabelsOn}" TextColor="White"/>
+                <Label Text="Phone" TextColor="White"/>
+                <Entry Text="{Binding Path=OrderParam.Phone}" Keyboard="Telephone" Placeholder="(xx)yyyyyyy" FontSize="Medium" IsVisible="{Binding EntriesOn}" TextChanged="EntryPhone_TextChanged" BackgroundColor="White"/>
+                <Label Text="{Binding Path=OrderParam.Phone}" FontSize="Medium" IsVisible="{Binding LabelsOn}" TextColor="White"/>
+                <Label Text="Address" TextColor="White"/>
+                <Entry Text="{Binding Path=OrderParam.Address}" FontSize="Medium" IsVisible="{Binding EntriesOn}" TextChanged="EntryAddress_TextChanged" BackgroundColor="White"/>
+                <Label Text="{Binding Path=OrderParam.Address}" FontSize="Medium" IsVisible="{Binding LabelsOn}" TextColor="White"/>
+                <Label Text="Choosen dish" TextColor="White"/>
+                <!--<Entry Text="{Binding Path=OrderParam.Dish}" FontSize="Medium" IsVisible="{Binding EntriesOn}"/>
             <Label Text="{Binding Path=OrderParam.Dish}" FontSize="Medium" IsVisible="{Binding LabelsOn}"/>-->
-            <Label Text="{Binding Path=OrderParam.Dish}" FontSize="Medium" />
+                <Label Text="{Binding Path=OrderParam.Dish}" FontSize="Medium" IsVisible="{Binding EntriesOn}" BackgroundColor="White"/>
+                <Label Text="{Binding Path=OrderParam.Dish}" FontSize="Medium" IsVisible="{Binding LabelsOn}" TextColor="White"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+                <Button Text="Order" Command="{Binding ViewModel.SaveOrderCommand}" CommandParameter="{Binding OrderParam}" IsVisible="{Binding EntriesOn}"
+                        BackgroundColor="DarkOrange" TextColor="White" Clicked="Button_Clicked"/>
+                <Button Text="Delete" Command="{Binding ViewModel.DeleteOrderCommand}" CommandParameter="{Binding OrderParam}" IsVisible="{Binding ViewModel.IsOnlineMode}"
+                        BackgroundColor="DarkOrange" TextColor="White" Clicked="Button_Clicked"/>
+                <Button Text="Back" Command="{Binding Path=ViewModel.BackCommand}" 
+                        BackgroundColor="DarkOrange" TextColor="White" Clicked="Button_Clicked"/>
+            </StackLayout>
         </StackLayout>
-        <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
-            <Button Text="Order" Command="{Binding ViewModel.SaveOrderCommand}" CommandParameter="{Binding OrderParam}" IsVisible="{Binding EntriesOn}"/>
-            <Button Text="Clear" Command="{Binding ViewModel.DeleteOrderCommand}" CommandParameter="{Binding OrderParam}" IsVisible="{Binding ViewModel.IsOnlineMode}"/>
-            <Button Text="Back" Command="{Binding Path=ViewModel.BackCommand}" />
-        </StackLayout>
-        <Label IsVisible="{Binding ViewModel.IsOfflineMode}" Text="Offline-mode" />
-        <Label IsVisible="{Binding ViewModel.IsOnlineMode}" Text="Online-mode" />
+        <Label IsVisible="{Binding ViewModel.IsOfflineMode}" Text="Offline-mode" TextColor="LightGray" VerticalOptions="End"/>
+        <Label IsVisible="{Binding ViewModel.IsOnlineMode}" Text="Online-mode" TextColor="LightGray" VerticalOptions="End"/>
     </StackLayout>
 </ContentPage>

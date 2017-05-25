@@ -74,5 +74,15 @@ namespace OlympFoodClient
                 (sender as Entry).Text = text;
             }
         }
+
+        private void Button_Clicked(object sender, EventArgs e)
+        {
+            (sender as Button).BackgroundColor = Color.FromHex("#fa7a09");
+            Device.StartTimer(TimeSpan.FromSeconds(0.25), () =>
+            {
+                (sender as Button).BackgroundColor = Color.DarkOrange;
+                return false;
+            });
+        }
     }
 }

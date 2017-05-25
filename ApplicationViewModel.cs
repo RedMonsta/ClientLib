@@ -15,7 +15,8 @@ namespace OlympFoodClient
     public class ApplicationViewModel : INotifyPropertyChanged
     {
         bool initialized = false;
-        Dish selectedDish;
+        bool ordersloaded = false;
+        //Dish selectedDish;
         double progress;
         Order selectedOrder;
         TextDish textSelectedDish;
@@ -486,7 +487,8 @@ namespace OlympFoodClient
                     choosendishname = tempDish.Name;
                     textSelectedDish = new TextDish { Name = tempDish.Name, Energy_value = tempDish.Energy_value, Price = tempDish.Price };
                     OnPropertyChanged("TextSelectedDish");
-                    StatementText = "choosen " + textSelectedDish.Name + choosendishname;
+                    StatementText = "Watch info about choosen dish";
+                    //StatementText = "choosen " + textSelectedDish.Name + choosendishname;
                     Navigation.PushAsync(new DishPage(textSelectedDish, this));
                 }
             }
@@ -512,6 +514,7 @@ namespace OlympFoodClient
                     };
                     selectedOrder = null;
                     OnPropertyChanged("SelectedOrder");
+                    StatementText = "Watch info about choosen order";
                     Navigation.PushAsync(new OrderPage(tempOrd, this, true));
                 }
             }
@@ -526,7 +529,7 @@ namespace OlympFoodClient
         private void LoadOrders()
         {
             //Navigation.PopAsync();
-
+            StatementText = "See your orders.";
             Navigation.PushAsync(new OrdersListPage(ClientLogin, ClientPassword, IsOfflineMode));
             //var existingpages = Navigation.NavigationStack.ToList();
             //Navigation.RemovePage(existingpages[1]);
@@ -560,8 +563,8 @@ namespace OlympFoodClient
                 while (Dishes.Any())
                     Dishes.RemoveAt(Dishes.Count - 1);
 
-                foreach (Dish f in dishes)
-                    Dishes.Add(f);
+                foreach (Dish d in dishes)
+                    Dishes.Add(d);
 
                 if (Dishes.Count == 1 && Dishes[0].Name == "#RequestException#")
                 {
@@ -600,6 +603,9 @@ namespace OlympFoodClient
                     Dishes.Clear();
                     IsOfflineMode = true;
                     IsOnlineMode = false;
+                } else
+                {
+                    await GetOrders();
                 }
 
                 IsBusy = false;
@@ -695,7 +701,7 @@ namespace OlympFoodClient
                                             else
                                             {
                                                 Orders.Add(addedOrder);
-
+                                                StatementText = "Your order is accepted.";
                                                 GoToOrdersList();
 
                                                 //Back(); //Можно заменить на загрузку страницы заказов

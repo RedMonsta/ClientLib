@@ -11,7 +11,7 @@ namespace OlympFoodClient
     public class DishService
     {
 
-        const string Url = "http://192.168.0.108:52924/api/dish/";
+        const string Url = "http://192.168.0.111:52924/api/dish/";
         //const string Url = "http://192.168.43.33:52924/api/dish/";
 
         private HttpClient GetClient()

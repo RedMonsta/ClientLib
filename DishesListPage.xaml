@@ -1,13 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="OlympFoodClient.DishesListPage" Title="Dishes List">
+             x:Class="OlympFoodClient.DishesListPage" Title="Dishes List" BackgroundImage="back.png">
     <StackLayout>
-        <!--<Label x:Name="lblMessage" Text="{Binding StatementText}" />-->
-        <Label x:Name="lblLogin" Text="{Binding ClientLogin}" FontSize="Large"/>
-        <Button Text="Change user" Command="{Binding ExitClientCommand}" IsEnabled="{Binding IsLoaded}" IsVisible="{Binding IsOnlineMode}"/>
-        <Button Text="Update" Command="{Binding UpdateCommand}" IsEnabled="{Binding IsLoaded}" IsVisible="{Binding IsOnlineMode}"/>
-        <Button Text="Your orders" Command="{Binding LoadOrdersCommand}" IsEnabled="{Binding IsLoaded}" />
+        <Label x:Name="lblLogin" Text="{Binding ClientLogin}" FontSize="Large" TextColor="White"/>
+
+        <Grid IsVisible="{Binding IsOnlineMode}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="7*" />
+                <ColumnDefinition Width="3*" />
+            </Grid.ColumnDefinitions>
+            <Button Text="Your orders" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Command="{Binding LoadOrdersCommand}" IsEnabled="{Binding ViewModel.IsLoaded}" 
+                    VerticalOptions="Fill" HorizontalOptions="Fill" BackgroundColor="DarkOrange" TextColor="White" FontSize="24" Clicked="Button_Clicked"/>
+            <Button Text="Change user" Grid.Row="0" Grid.Column="1" Command="{Binding ExitClientCommand}" IsEnabled="{Binding ViewModel.IsLoaded}" IsVisible="true" 
+                    VerticalOptions="Fill" HorizontalOptions="Fill" BackgroundColor="DarkOrange" TextColor="White" Clicked="Button_Clicked"/>
+            <Button Text="Update" Grid.Row="1" Grid.Column="1" Command="{Binding UpdateCommand}" IsEnabled="{Binding ViewModel.IsLoaded}" IsVisible="true" 
+                    VerticalOptions="Fill" HorizontalOptions="Fill" BackgroundColor="DarkOrange" TextColor="White" Clicked="Button_Clicked"/>
+        </Grid>
+        <Button Text="Your orders" Command="{Binding LoadOrdersCommand}" IsEnabled="{Binding IsLoaded}" IsVisible="{Binding IsOfflineMode}"
+                HeightRequest="100" BackgroundColor="DarkOrange" TextColor="White" FontSize="24" Clicked="ButtonOfflineOrders_Clicked"/>
+        <!--<StackLayout Orientation="Horizontal">
+            <Button Text="Your orders" Command="{Binding LoadOrdersCommand}" IsEnabled="{Binding IsLoaded}"/>
+            <StackLayout>
+                <Button Text="Change user" Command="{Binding ExitClientCommand}" IsEnabled="{Binding IsLoaded}" IsVisible="{Binding IsOnlineMode}"/>
+                <Button Text="Update" Command="{Binding UpdateCommand}" IsEnabled="{Binding IsLoaded}" IsVisible="{Binding IsOnlineMode}"/>
+            </StackLayout>
+        </StackLayout>-->
         <ListView x:Name="dishesList" ItemsSource="{Binding TextDishes}"
               SelectedItem="{Binding TextSelectedDish, Mode=TwoWay}" HasUnevenRows="True">
             <ListView.ItemTemplate>
@@ -15,9 +37,10 @@
                     <ViewCell>
                         <ViewCell.View>
                             <StackLayout>
-                                <Label Text="{Binding Name}" FontSize="Medium" />
-                                <Label Text="{Binding Energy_value}" FontSize="Small" />
-                                <Label Text="{Binding Price}" FontSize="Small" />
+                                <Label Text="{Binding Name}" FontSize="Medium" TextColor="White"/>
+                                <Label Text="{Binding Energy_value}" FontSize="Small" TextColor="White"/>
+                                <Label Text="{Binding Price}" FontSize="Small" TextColor="White"/>
+                                <BoxView HeightRequest="2" Color="White" HorizontalOptions="FillAndExpand"/>
                                 <!--<Button Text="Order" Command="{Binding DishToOrderCommand}" Clicked="Button_Clicked" />-->                                                             
                             </StackLayout>
                         </ViewCell.View>
@@ -31,9 +54,11 @@
             <ActivityIndicator IsRunning="{Binding IsBusy}" Color="Accent" >
             </ActivityIndicator>
         </StackLayout>
-
-        <Label IsVisible="{Binding IsOfflineMode}" Text="Offline-mode" />
-        <Label IsVisible="{Binding IsOnlineMode}" Text="Online-mode" />
-        <Button IsVisible="{Binding IsOfflineMode}" Text="Reconnect" Command="{Binding TryToConnectCommand}"/>
+        
+        <Button IsVisible="{Binding IsOfflineMode}" Text="Reconnect" Command="{Binding TryToConnectCommand}" IsEnabled="{Binding IsLoaded}"
+                BackgroundColor="DarkGray" TextColor="WhiteSmoke" Clicked="ButtonReconnect_Clicked"/>
+        <Label IsVisible="{Binding IsOfflineMode}" Text="Offline-mode" TextColor="LightGray" VerticalOptions="End"/>
+        <Label IsVisible="{Binding IsOnlineMode}" Text="Online-mode" TextColor="LightGray" VerticalOptions="End"/>
+        
     </StackLayout>
 </ContentPage>

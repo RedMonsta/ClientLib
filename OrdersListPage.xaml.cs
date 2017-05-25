@@ -18,6 +18,7 @@ namespace OlympFoodClient
         protected override async void OnAppearing()
         {
             var isEmpty = await viewModel.GetOrders();
+            viewModel.StatementText = "See your orders.";
             if (isEmpty) lblError.IsVisible = true;
             else lblError.IsVisible = false;
             base.OnAppearing();
@@ -34,6 +35,26 @@ namespace OlympFoodClient
             //if (isEmpty) lblError.IsVisible = true;
             //else lblError.IsVisible = false;
             //lblError.IsVisible = true;
+        }
+
+        private void ButtonReconnect_Clicked(object sender, EventArgs e)
+        {
+            (sender as Button).BackgroundColor = Color.LightGray;
+            Device.StartTimer(TimeSpan.FromSeconds(0.25), () =>
+            {
+                (sender as Button).BackgroundColor = Color.DarkGray;
+                return false;
+            });
+        }
+
+        private void Button_Clicked(object sender, EventArgs e)
+        {
+            (sender as Button).BackgroundColor = Color.FromHex("#fa7a09");
+            Device.StartTimer(TimeSpan.FromSeconds(0.25), () =>
+            {
+                (sender as Button).BackgroundColor = Color.DarkOrange;
+                return false;
+            });
         }
     }
 }

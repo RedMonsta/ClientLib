@@ -1,18 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="OlympFoodClient.ClientPage" Title="Authorization">
+             x:Class="OlympFoodClient.ClientPage" Title="Authorization" BackgroundImage="back.png">
     <StackLayout>
         <Label x:Name="lblMessage" Text="{Binding ViewModel.StatementText}" />
-        <Label x:Name="lblLogin" Text="Login" />
-        <Entry Text="{Binding Path=ClientParam.Login}" FontSize="Medium" />
-        <Label Text="Password" />
-        <Entry Text="{Binding Path=ClientParam.Password}" FontSize="Medium" IsPassword="True" />
-        <Button Text="Sign In" Command="{Binding ViewModel.SignInCommand}" CommandParameter="{Binding ClientParam}" IsVisible="{Binding ViewModel.IsOnlineMode}" IsEnabled="{Binding ViewModel.IsLoaded}" />
-        <Button Text="Registration" Command="{Binding ViewModel.GoToRegistrationCommand}" IsVisible="{Binding ViewModel.IsOnlineMode}" IsEnabled="{Binding ViewModel.IsLoaded}"/>
+        <Label x:Name="lblLogin" Text="Login" TextColor="White"/>
+        <Entry Text="{Binding Path=ClientParam.Login}" FontSize="Medium" BackgroundColor="White" TextChanged="EntryLogin_TextChanged"/>
+        <Label Text="Password" TextColor="White" />
+        <Entry Text="{Binding Path=ClientParam.Password}" FontSize="Medium" IsPassword="True" BackgroundColor="White" TextChanged="EntryPassword_TextChanged_1"/>
+        <Button Text="Sign In" Command="{Binding ViewModel.SignInCommand}" CommandParameter="{Binding ClientParam}" IsVisible="{Binding ViewModel.IsOnlineMode}" 
+                IsEnabled="{Binding ViewModel.IsLoaded}" BackgroundColor="DarkOrange" TextColor="White"/>
+        <Button Text="Registration" Command="{Binding ViewModel.GoToRegistrationCommand}" IsVisible="{Binding ViewModel.IsOnlineMode}" 
+                IsEnabled="{Binding ViewModel.IsLoaded}" BackgroundColor="DarkOrange" TextColor="White"/>
 
-        <Label IsVisible="{Binding ViewModel.IsOfflineMode}" Text="Offline-mode" />
-        <Button IsVisible="{Binding ViewModel.IsOfflineMode}" Text="Reconnect" Command="{Binding ViewModel.TryToConnectCommand}"/>
+        <Label IsVisible="{Binding ViewModel.IsOfflineMode}" Text="Offline-mode" TextColor="LightGray"/>
+        <Button IsVisible="{Binding ViewModel.IsOfflineMode}" Text="Reconnect" Command="{Binding ViewModel.TryToConnectCommand}" IsEnabled="{Binding ViewModel.IsLoaded}"
+                BackgroundColor="DarkGray" TextColor="WhiteSmoke" Clicked="ButtonReconnect_Clicked"/>
 
     </StackLayout>
 </ContentPage>

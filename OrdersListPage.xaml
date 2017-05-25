@@ -1,13 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="OlympFoodClient.OrdersListPage"  Title="Your orders">
+             x:Class="OlympFoodClient.OrdersListPage"  Title="Your orders" BackgroundImage="back.png">
     <StackLayout x:Name="slMain">
-        <!--<Label x:Name="lblMessage" Text="{Binding StatementText}" />-->
-        <Button Text="Change user" Command="{Binding ExitClientCommand}" IsEnabled="{Binding IsLoaded}" IsVisible="{Binding IsOnlineMode}"/>
-        <!--<Button Text="Make an order" Command="{Binding CreateOrderCommand}" IsEnabled="{Binding IsLoaded}" IsVisible="{Binding IsOnlineMode}"/>-->
-        <Button Text="Back to dishes list" Command="{Binding BackCommand}" IsEnabled="{Binding IsLoaded}"/>
-        <Label x:Name="lblError" IsVisible="False" Text="Order list is empty" FontSize="Large" />
+        <Label x:Name="lblMessage" Text="{Binding StatementText}" TextColor="#fa7a09"/>
+        <StackLayout Orientation="Horizontal">
+            <Button Text="Back to dishes list" Command="{Binding BackCommand}" IsEnabled="{Binding IsLoaded}"
+                    BackgroundColor="DarkOrange" TextColor="White" HorizontalOptions="FillAndExpand" Clicked="Button_Clicked"/>
+            <Button Text="Change user" Command="{Binding ExitClientCommand}" IsEnabled="{Binding IsLoaded}" IsVisible="{Binding IsOnlineMode}"
+                    BackgroundColor="DarkOrange" TextColor="White" Clicked="Button_Clicked"/>
+            <!--<Button Text="Make an order" Command="{Binding CreateOrderCommand}" IsEnabled="{Binding IsLoaded}" IsVisible="{Binding IsOnlineMode}"/>-->           
+        </StackLayout>
+        <Label x:Name="lblError" IsVisible="False" Text="Order list is empty" FontSize="Large" TextColor="White"/>
         <ListView x:Name="ordersList" ItemsSource="{Binding Orders}"
               SelectedItem="{Binding SelectedOrder, Mode=TwoWay}" HasUnevenRows="True">
             <ListView.ItemTemplate>
@@ -15,11 +19,12 @@
                     <ViewCell>
                         <ViewCell.View>
                             <StackLayout>
-                                <Label Text="{Binding Name}" FontSize="Medium" />
-                                <Label Text="{Binding Phone}" FontSize="Medium" />
-                                <Label Text="{Binding Address}" FontSize="Medium" />
-                                <Label Text="{Binding Dish}" FontSize="Medium" />
-                                <Label Text="{Binding Status}" FontSize="Medium" />
+                                <Label Text="{Binding Name}" FontSize="Medium" TextColor="White"/>
+                                <Label Text="{Binding Phone}" FontSize="Medium" TextColor="White"/>
+                                <Label Text="{Binding Address}" FontSize="Medium" TextColor="White"/>
+                                <Label Text="{Binding Dish}" FontSize="Medium" TextColor="White"/>
+                                <Label Text="{Binding Status}" FontSize="Medium" TextColor="White"/>
+                                <BoxView HeightRequest="2" Color="White" HorizontalOptions="FillAndExpand"/>
                             </StackLayout>
                         </ViewCell.View>
                     </ViewCell>
@@ -32,8 +37,9 @@
             <ActivityIndicator IsRunning="{Binding IsBusy}" Color="Accent" >
             </ActivityIndicator>
         </StackLayout>
-        <Label IsVisible="{Binding IsOfflineMode}" Text="Offline-mode" />
-        <Label IsVisible="{Binding IsOnlineMode}" Text="Online-mode" />
-        <Button IsVisible="{Binding IsOfflineMode}" Text="Reconnect" Command="{Binding ViewModel.TryToConnectCommand}"/>
+        <Label IsVisible="{Binding IsOfflineMode}" Text="Offline-mode" TextColor="LightGray"/>
+        <Label IsVisible="{Binding IsOnlineMode}" Text="Online-mode" TextColor="LightGray"/>
+        <Button IsVisible="{Binding IsOfflineMode}" Text="Reconnect" Command="{Binding TryToConnectCommand}" IsEnabled="{Binding IsLoaded}"
+                BackgroundColor="DarkGray" TextColor="WhiteSmoke" Clicked="ButtonReconnect_Clicked"/>
     </StackLayout>
 </ContentPage>

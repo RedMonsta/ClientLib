@@ -6,13 +6,13 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("OlympFoodClient")]
-//[assembly: AssemblyTitle("Athletic Kitchen")]
+//[assembly: AssemblyTitle("OlympFoodClient")]
+[assembly: AssemblyTitle("Athletic Kitchen Mobile")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("OlympFoodClient")]
-//[assembly: AssemblyProduct("Athletic Kitchen")]
+//[assembly: AssemblyProduct("OlympFoodClient")]
+[assembly: AssemblyProduct("Athletic Kitchen Mobile")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

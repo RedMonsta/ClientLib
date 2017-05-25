@@ -1,23 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="OlympFoodClient.DishPage" Title="Dish info">
+             x:Class="OlympFoodClient.DishPage" Title="Dish info" BackgroundImage="back.png">
     <StackLayout>
-        <Label x:Name="lblMessage" Text="{Binding ViewModel.StatementText}" />
         <StackLayout>
-            <Label Text="Name" />
-            <Label Text="{Binding Path=Model.Name}" FontSize="Medium" />
-            <Label Text="Energy value" />
-            <Label Text="{Binding Path=Model.Energy_value}" FontSize="Medium" />
-            <Label Text="Price" />
-            <Label Text="{Binding Path=Model.Price}" FontSize="Medium" />
+            <Label x:Name="lblMessage" Text="{Binding ViewModel.StatementText}" TextColor="#fa7a09"/>
+            <StackLayout>
+                <Label Text="Name" TextColor="White"/>
+                <Label Text="{Binding Path=Model.Name}" FontSize="Medium" TextColor="White"/>
+                <Label Text="Energy value" TextColor="White"/>
+                <Label Text="{Binding Path=Model.Energy_value}" FontSize="Medium" TextColor="White"/>
+                <Label Text="Price" TextColor="White"/>
+                <Label Text="{Binding Path=Model.Price}" FontSize="Medium" TextColor="White"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+                <Button Text="Back" Command="{Binding Path=ViewModel.BackCommand}" BackgroundColor="DarkOrange" TextColor="White" Clicked="Button_Clicked"/>
+                <Button Text="Order" Command="{Binding Path=ViewModel.DishToOrderCommand}" IsVisible="{Binding ViewModel.IsOnlineMode}" 
+                        BackgroundColor="DarkOrange" TextColor="White" Clicked="Button_Clicked"/>
+            </StackLayout>
         </StackLayout>
-        <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
-            <Button Text="Back" Command="{Binding Path=ViewModel.BackCommand}" />
-            <Button Text="Order" Command="{Binding Path=ViewModel.DishToOrderCommand}" IsVisible="{Binding ViewModel.IsOnlineMode}"/>
-        </StackLayout>
-        <Label IsVisible="{Binding ViewModel.IsOfflineMode}" Text="Offline-mode" />
-        <Label IsVisible="{Binding ViewModel.IsOnlineMode}" Text="Online-mode" />
+        <Label IsVisible="{Binding ViewModel.IsOfflineMode}" Text="Offline-mode" TextColor="LightGray" VerticalOptions="End"/>
+        <Label IsVisible="{Binding ViewModel.IsOnlineMode}" Text="Online-mode" TextColor="LightGray" VerticalOptions="End"/>
         
     </StackLayout>
 </ContentPage>
